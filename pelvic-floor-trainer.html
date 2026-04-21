@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Pelvic Floor Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f0ea;--surface:#fffdf9;--surface2:#f0ebe3;--text:#2c2416;--text-muted:#8a7a68;--accent:#b4714a;--accent-light:#e8c4a8;--hold:#c97a52;--rest:#7aab9c;--quick:#b85e8a;--release:#6a8eb5;--shadow:rgba(44,36,22,0.1);--border:rgba(44,36,22,0.07);--ring-size:min(68vw,280px);--ring-stroke:10}
+body.theme-dark{--bg:#1a1612;--surface:#252019;--surface2:#2f2922;--text:#f0ead8;--text-muted:#9c8e7a;--accent:#d48a64;--accent-light:#4a3825;--hold:#d48a64;--rest:#8fc0b0;--quick:#cc789e;--release:#7fa0c4;--shadow:rgba(0,0,0,0.3);--border:rgba(240,234,216,0.06)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100dvh;overflow-x:hidden;transition:background .3s,color .3s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E")}
+.screen{display:none;flex-direction:column;min-height:100dvh;padding:24px 20px;gap:16px}
+.screen.active{display:flex}
+h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:2.6rem;line-height:1.1;letter-spacing:-.02em}
+h2{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.8rem}
+h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.2rem}
+.label{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:400;letter-spacing:.04em;transition:all .2s;-webkit-user-select:none;user-select:none}
+.btn-primary{background:var(--accent);color:#fff;padding:16px 32px;border-radius:100px;font-size:.95rem;width:100%;box-shadow:0 4px 20px rgba(180,113,74,.3)}
+.btn-primary:active{transform:scale(.97)}
+.btn-ghost{background:transparent;color:var(--text-muted);padding:12px 24px;border-radius:100px;font-size:.85rem;border:1.5px solid var(--surface2)}
+.btn-ghost:active{background:var(--surface2)}
+.btn-icon{background:var(--surface);width:48px;height:48px;border-radius:50%;font-size:1.2rem;box-shadow:0 2px 12px var(--shadow);flex-shrink:0;color:var(--text)}
+.btn-icon:active{transform:scale(.93)}
+.btn-sm{padding:8px 16px;border-radius:100px;background:var(--surface2);color:var(--text);font-size:.8rem;border:none;cursor:pointer}
+.card{background:var(--surface);border-radius:20px;padding:18px 20px;border:1px solid var(--border)}
+.card-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.info-card{background:var(--surface);border:1.5px solid var(--accent-light);border-radius:16px;padding:16px 18px}
+.stepper{display:flex;align-items:center;gap:4px}
+.stepper-val{min-width:44px;text-align:center;font-size:1.4rem;font-family:'Cormorant Garamond',serif}
+.stepper-btn{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--surface2);background:var(--surface);cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;color:var(--text)}
+.stepper-btn:active{background:var(--accent-light)}
+.switch{position:relative;width:44px;height:26px;flex-shrink:0}
+.switch input{display:none}
+.switch-slider{position:absolute;inset:0;background:var(--surface2);border-radius:100px;transition:.3s;cursor:pointer}
+.switch-slider::before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.switch input:checked+.switch-slider{background:var(--accent)}
+.switch input:checked+.switch-slider::before{transform:translateX(18px)}
+.home-header h1 em{color:var(--accent);font-style:italic}
+.home-tagline{color:var(--text-muted);font-size:.92rem;margin-top:6px;line-height:1.5}
+.streak-card{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:14px;padding:14px 18px;border:1px solid var(--border)}
+.streak-flame{font-size:1.6rem}
+.streak-num{font-family:'Cormorant Garamond',serif;font-size:1.8rem}
+.streak-label{font-size:.78rem;color:var(--text-muted)}
+.weekly-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.weekly-stat{text-align:center;padding:10px 6px;background:var(--surface2);border-radius:10px}
+.weekly-stat-val{font-family:'Cormorant Garamond',serif;font-size:1.4rem}
+.weekly-stat-lbl{font-size:.65rem;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase}
+
+/* Plan card */
+.plan-card{background:linear-gradient(160deg,var(--surface),color-mix(in srgb,var(--accent-light) 30%,var(--surface)));border:1.5px solid var(--accent-light);border-radius:20px;padding:18px 20px}
+.plan-header-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:4px}
+.plan-phase-tag{font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:500}
+.plan-week-num{font-family:'Cormorant Garamond',serif;font-size:1.5rem;line-height:1;color:var(--text)}
+.plan-focus{font-size:.82rem;color:var(--text-muted);font-style:italic;margin-bottom:14px;line-height:1.4}
+.plan-sessions{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.plan-session{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface);border-radius:12px;border:1px solid var(--border);cursor:pointer;transition:all .2s}
+.plan-session:active{transform:scale(.98)}
+.plan-session.done{opacity:.55}
+.plan-session.suggested{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 15%,transparent)}
+.plan-sess-icon{width:24px;height:24px;border-radius:50%;border:2px solid var(--surface2);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;color:var(--text-muted)}
+.plan-session.done .plan-sess-icon{background:var(--accent);border-color:var(--accent);color:#fff}
+.plan-sess-info{flex:1;min-width:0}
+.plan-sess-time{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);font-weight:500}
+.plan-sess-name{font-size:.92rem;font-weight:500;margin-top:1px}
+.plan-sess-detail{font-size:.74rem;color:var(--text-muted);margin-top:2px}
+.plan-sess-action{font-size:.74rem;color:var(--accent);font-weight:500;letter-spacing:.04em}
+.plan-progress-track{background:var(--surface2);border-radius:100px;height:6px;overflow:hidden;margin-bottom:6px}
+.plan-progress-fill{height:100%;background:var(--accent);border-radius:100px;transition:width .6s}
+.plan-progress-meta{display:flex;justify-content:space-between;font-size:.72rem;color:var(--text-muted)}
+.plan-link{display:block;text-align:center;margin-top:10px;font-size:.78rem;color:var(--accent);text-decoration:none;padding:6px}
+
+.plan-cta-card{background:linear-gradient(135deg,color-mix(in srgb,var(--release) 15%,var(--surface)),var(--surface));border:1.5px solid color-mix(in srgb,var(--release) 30%,var(--accent-light));border-radius:16px;padding:18px}
+.plan-cta-card .nudge-title{color:var(--release)}
+
+.program-list{display:flex;flex-direction:column;gap:10px}
+.program-card{background:var(--surface);border-radius:16px;padding:16px 18px;border:2px solid transparent;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:space-between}
+.program-card.selected{border-color:var(--accent)}
+.program-card:active{transform:scale(.98)}
+.program-name{font-weight:500;font-size:.95rem;margin-bottom:3px}
+.program-desc{font-size:.78rem;color:var(--text-muted)}
+.program-level-dots{display:flex;gap:3px;margin-top:6px}
+.program-level-dot{display:inline-block;width:5px;height:5px;border-radius:50%}
+.program-level-dot.filled{background:var(--accent)}
+.program-level-dot.empty{background:var(--surface2)}
+.program-level-tag{font-size:.68rem;color:var(--accent);margin-left:6px}
+.program-badge{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:100px;background:var(--accent-light);color:var(--accent);font-weight:500;white-space:nowrap}
+
+.collapse-section{display:flex;flex-direction:column;gap:10px}
+.collapse-toggle{display:flex;align-items:center;gap:8px;padding:8px;background:transparent;border:none;color:var(--text-muted);font-family:inherit;font-size:.78rem;cursor:pointer;letter-spacing:.04em}
+.collapse-toggle::after{content:'▼';font-size:.6rem;transition:transform .2s}
+.collapse-section.collapsed .collapse-toggle::after{transform:rotate(-90deg)}
+.collapse-content{display:flex;flex-direction:column;gap:10px}
+.collapse-section.collapsed .collapse-content{display:none}
+
+#custom-controls{display:none;flex-direction:column;gap:10px}
+#custom-controls.visible{display:flex}
+.nudge-title{font-size:.82rem;font-weight:500;color:var(--accent);margin-bottom:4px}
+.nudge-text{font-size:.78rem;color:var(--text-muted);line-height:1.5}
+.overload-bar-wrap{background:var(--surface2);border-radius:100px;height:6px;overflow:hidden;margin-top:10px}
+.overload-bar{height:100%;background:var(--accent);border-radius:100px;transition:width .6s}
+.hidden{display:none!important}
+
+/* Session screen */
+#screen-session{align-items:center;justify-content:space-between;gap:0}
+.session-header{width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.session-progress{font-size:.78rem;color:var(--text-muted);text-align:center;line-height:1.5}
+.session-progress strong{color:var(--text);font-weight:500}
+.block-label{display:block;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:500;margin-top:2px}
+.elapsed-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;background:var(--surface2);border-radius:100px;font-variant-numeric:tabular-nums;font-size:.72rem;color:var(--text);margin-top:4px}
+.elapsed-pill.paused{opacity:.5}
+.elapsed-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.elapsed-pill.paused .elapsed-dot{animation:none;background:var(--text-muted)}
+.position-pill{background:color-mix(in srgb,var(--release) 18%,var(--surface2));color:var(--release);font-weight:500;font-size:.7rem}
+.position-banner{display:flex;align-items:center;gap:10px;padding:10px 14px;background:color-mix(in srgb,var(--release) 12%,var(--surface));border:1px solid color-mix(in srgb,var(--release) 25%,transparent);border-radius:14px;font-size:.8rem;color:var(--text);max-width:calc(var(--ring-size) + 40px);text-align:left;line-height:1.4}
+.position-banner .icon{font-size:1.5rem;flex-shrink:0}
+.position-banner .label-strong{font-weight:500;color:var(--release);display:block;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+
+.ring-wrap{position:relative;display:flex;align-items:center;justify-content:center;width:var(--ring-size);height:var(--ring-size);flex-shrink:0;margin:4px 0}
+.ring-wrap svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--surface2);stroke-width:var(--ring-stroke)}
+.ring-track{fill:none;stroke:var(--hold);stroke-width:var(--ring-stroke);stroke-linecap:round;transition:stroke-dashoffset .4s linear,stroke .4s}
+.ring-track.phase-rest{stroke:var(--rest)}
+.ring-track.phase-quick{stroke:var(--quick)}
+.ring-track.phase-release{stroke:var(--release)}
+.ring-track.phase-prep{stroke:var(--accent)}
+.ring-center{position:absolute;display:flex;flex-direction:column;align-items:center;gap:4px}
+.ring-seconds{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,15vw,4.2rem);font-weight:300;line-height:1;letter-spacing:-.03em}
+.ring-phase{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);transition:color .4s}
+.ring-phase.hold{color:var(--hold)}.ring-phase.rest{color:var(--rest)}.ring-phase.quick{color:var(--quick)}.ring-phase.release{color:var(--release)}.ring-phase.prep{color:var(--accent)}
+
+@keyframes pulse-hold{0%,100%{box-shadow:0 0 0 0 rgba(201,122,82,.25)}50%{box-shadow:0 0 0 16px rgba(201,122,82,0)}}
+@keyframes pulse-rest{0%,100%{box-shadow:0 0 0 0 rgba(122,171,156,.25)}50%{box-shadow:0 0 0 16px rgba(122,171,156,0)}}
+@keyframes pulse-quick{0%,100%{box-shadow:0 0 0 0 rgba(184,94,138,.25)}50%{box-shadow:0 0 0 12px rgba(184,94,138,0)}}
+@keyframes pulse-release{0%,100%{box-shadow:0 0 0 0 rgba(106,142,181,.3)}50%{box-shadow:0 0 0 20px rgba(106,142,181,0)}}
+.ring-pulse{position:absolute;border-radius:50%;width:calc(var(--ring-size) + 10px);height:calc(var(--ring-size) + 10px);pointer-events:none;opacity:0}
+.ring-pulse.active-hold{opacity:1;animation:pulse-hold 2s ease-in-out infinite}
+.ring-pulse.active-rest{opacity:1;animation:pulse-rest 2s ease-in-out infinite}
+.ring-pulse.active-quick{opacity:1;animation:pulse-quick 1s ease-in-out infinite}
+.ring-pulse.active-release{opacity:1;animation:pulse-release 4s ease-in-out infinite}
+
+.breath-guide{display:flex;align-items:center;gap:10px;height:32px;font-size:.78rem;letter-spacing:.08em;color:var(--text-muted);opacity:0;transition:opacity .5s}
+.breath-guide.active{opacity:1}
+.breath-dot{width:10px;height:10px;border-radius:50%;background:var(--rest);transition:transform 4s ease-in-out,background 4s ease-in-out}
+.breath-guide.inhaling .breath-dot{transform:scale(2.2);background:var(--release)}
+.breath-guide.exhaling .breath-dot{transform:scale(.8);background:var(--hold)}
+
+.rep-dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:280px}
+.rep-dot{width:10px;height:10px;border-radius:50%;background:var(--surface2);transition:all .3s}
+.rep-dot.done{background:var(--accent)}
+.rep-dot.current{background:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+.rep-dot.release-style.done{background:var(--release)}
+.rep-dot.release-style.current{background:var(--release);box-shadow:0 0 0 3px rgba(106,142,181,.3)}
+.rep-dot.quick-style.done{background:var(--quick)}
+.rep-dot.quick-style.current{background:var(--quick);box-shadow:0 0 0 3px rgba(184,94,138,.3)}
+.set-info{text-align:center}
+.set-info .set-num{font-family:'Cormorant Garamond',serif;font-size:1.1rem}
+.next-label{color:var(--text-muted);font-size:.82rem;margin-top:6px;min-height:1.2em}
+.session-controls{display:flex;align-items:center;gap:14px;width:100%;padding:0 8px}
+.btn-main-action{flex:1;background:var(--accent);color:#fff;padding:17px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:1rem;letter-spacing:.04em;transition:all .2s;box-shadow:0 4px 20px rgba(180,113,74,.3)}
+.btn-main-action:active{transform:scale(.97)}
+.btn-main-action.paused{background:var(--rest);box-shadow:0 4px 20px rgba(122,171,156,.3)}
+.block-transition{position:fixed;inset:0;background:var(--bg);z-index:50;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;text-align:center;padding:40px;opacity:0;pointer-events:none;transition:opacity .4s}
+.block-transition.visible{opacity:1;pointer-events:all}
+.block-transition h2{color:var(--accent)}
+.block-transition .sub{color:var(--text-muted);font-size:.92rem;max-width:280px}
+
+#screen-complete{align-items:center;justify-content:center;gap:24px;text-align:center;padding:40px 20px}
+.complete-icon{font-size:4rem;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.complete-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
+.stat-box{background:var(--surface);border-radius:16px;padding:18px 12px;border:1px solid var(--border)}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:2rem;line-height:1}
+.stat-lbl{font-size:.7rem;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-top:4px}
+.struggled-note{font-size:.78rem;color:var(--text-muted);font-style:italic;padding:8px 16px;background:var(--surface2);border-radius:100px}
+
+.chart-card{padding:18px 12px 12px}
+.chart-header{display:flex;justify-content:space-between;align-items:baseline;padding:0 8px 8px}
+.chart-title{font-size:.78rem;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase}
+.chart-meta{font-size:.78rem;color:var(--text-muted)}
+.chart-svg{width:100%;height:140px;display:block}
+.chart-summary{display:flex;justify-content:space-around;padding:10px 0 4px;border-top:1px solid var(--border);margin-top:8px}
+.chart-summary-item{text-align:center}
+.chart-summary-val{font-family:'Cormorant Garamond',serif;font-size:1.3rem}
+.chart-summary-lbl{font-size:.65rem;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase}
+
+.history-list{display:flex;flex-direction:column;gap:10px}
+.history-item{background:var(--surface);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;border:1px solid var(--border)}
+.history-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.history-date{font-size:.82rem;color:var(--text-muted)}
+.history-detail{font-size:.88rem;font-weight:500}
+.struggle-tag,.plan-tag{font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);background:var(--surface2);padding:2px 8px;border-radius:100px;margin-left:6px;font-weight:400}
+.plan-tag{color:var(--accent);background:var(--accent-light)}
+.history-empty{color:var(--text-muted);text-align:center;font-size:.9rem;padding:40px 0}
+.data-actions{display:flex;gap:10px}
+.data-actions .btn-sm{flex:1}
+
+.settings-group{background:var(--surface);border-radius:16px;overflow:hidden;border:1px solid var(--border)}
+.settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border)}
+.settings-row:last-child{border-bottom:none}
+.settings-row-label{font-size:.92rem}
+.settings-row-desc{font-size:.74rem;color:var(--text-muted);margin-top:2px;line-height:1.4}
+.settings-select{background:var(--surface2);border:none;border-radius:100px;padding:8px 14px;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--text);cursor:pointer}
+.wake-warn{font-size:.7rem;color:var(--text-muted);text-align:center;padding:0 20px;line-height:1.4}
+
+/* Plan overview screen */
+.plan-overview-summary{background:linear-gradient(160deg,var(--surface),color-mix(in srgb,var(--accent-light) 25%,var(--surface)));border:1px solid var(--accent-light);border-radius:16px;padding:18px;text-align:center}
+.plan-overview-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:400;line-height:1.2}
+.plan-overview-sub{font-size:.78rem;color:var(--text-muted);margin-top:4px;line-height:1.4}
+.plan-week-list{display:flex;flex-direction:column;gap:8px}
+.plan-week-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px}
+.plan-week-card.current{border-color:var(--accent);background:color-mix(in srgb,var(--accent-light) 15%,var(--surface))}
+.plan-week-card.done{opacity:.55}
+.plan-week-num-badge{width:32px;height:32px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:.95rem;font-weight:500;flex-shrink:0}
+.plan-week-card.current .plan-week-num-badge{background:var(--accent);color:#fff}
+.plan-week-card.done .plan-week-num-badge{background:var(--rest);color:#fff}
+.plan-week-info{flex:1;min-width:0}
+.plan-week-phase{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);font-weight:500}
+.plan-week-name{font-size:.88rem;font-weight:500;margin-top:1px}
+.plan-week-vol{font-size:.72rem;color:var(--text-muted);margin-top:2px}
+
+.spacer{flex:1}
+.gap-sm{gap:8px}.gap-md{gap:14px}.mt-sm{margin-top:8px}.mt-md{margin-top:16px}
+.w-full{width:100%}
+.flex-col{display:flex;flex-direction:column}
+.flex-row{display:flex;flex-direction:row}
+.align-center{align-items:center}
+.divider{height:1px;background:var(--border);margin:4px 0}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:var(--bg);padding:12px 22px;border-radius:100px;font-size:.85rem;white-space:nowrap;transition:transform .3s cubic-bezier(.34,1.3,.64,1);z-index:99;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+#file-import{display:none}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="screen-home" class="screen active">
+  <div class="home-header">
+    <h1>Pelvic<br><em>Floor</em></h1>
+    <p class="home-tagline">Guided training with progressive overload</p>
+  </div>
+
+  <div class="info-card hidden" id="resume-card">
+    <div class="nudge-title">⏸ Resume session</div>
+    <div class="nudge-text" id="resume-text"></div>
+    <div class="flex-row gap-sm mt-sm">
+      <button class="btn btn-primary" style="padding:10px 16px;font-size:.85rem;width:auto" onclick="resumeSession()">Continue</button>
+      <button class="btn btn-ghost" style="padding:10px 16px;font-size:.8rem" onclick="discardResume()">Discard</button>
+    </div>
+  </div>
+
+  <!-- Active plan card -->
+  <div class="plan-card hidden" id="plan-active-card">
+    <div class="plan-header-row">
+      <div>
+        <div class="plan-phase-tag" id="plan-phase-tag">Foundation</div>
+        <div class="plan-week-num">Week <span id="plan-week-num">1</span> of 12</div>
+      </div>
+      <button class="btn-sm" onclick="showScreen('plan')">View plan</button>
+    </div>
+    <div class="plan-focus" id="plan-focus"></div>
+    <div class="plan-sessions" id="plan-sessions"></div>
+    <div class="plan-progress-track"><div class="plan-progress-fill" id="plan-progress-fill"></div></div>
+    <div class="plan-progress-meta">
+      <span>Day <span id="plan-day-num">1</span> of 84</span>
+      <span><span id="plan-pct">0</span>% complete</span>
+    </div>
+  </div>
+
+  <!-- Plan CTA (when no plan) -->
+  <div class="plan-cta-card hidden" id="plan-cta-card">
+    <div class="nudge-title">📋 Start a 12-week plan</div>
+    <div class="nudge-text">Sexual function & ejaculatory control — 3 sessions/day, gradually progressing from foundation to mastery.</div>
+    <div class="flex-row gap-sm mt-sm">
+      <button class="btn btn-primary" style="padding:10px 16px;font-size:.85rem;width:auto" onclick="startPlan()">Begin plan</button>
+      <button class="btn btn-ghost" style="padding:10px 16px;font-size:.8rem" onclick="showScreen('plan')">Preview</button>
+    </div>
+  </div>
+
+  <div class="streak-card">
+    <span class="streak-flame">🔥</span>
+    <div>
+      <div class="streak-num" id="streak-num">0</div>
+      <div class="streak-label">day streak</div>
+    </div>
+    <div class="spacer"></div>
+    <div style="text-align:right">
+      <div class="label">Total</div>
+      <div style="font-size:1.1rem;font-family:'Cormorant Garamond',serif" id="total-sessions">0</div>
+    </div>
+  </div>
+
+  <div class="card hidden" id="weekly-card">
+    <div class="label">This week</div>
+    <div class="weekly-grid">
+      <div class="weekly-stat"><div class="weekly-stat-val" id="week-sessions">0</div><div class="weekly-stat-lbl">Sessions</div></div>
+      <div class="weekly-stat"><div class="weekly-stat-val" id="week-reps">0</div><div class="weekly-stat-lbl">Reps</div></div>
+      <div class="weekly-stat"><div class="weekly-stat-val" id="week-avg">0</div><div class="weekly-stat-lbl">Avg hold</div></div>
+    </div>
+  </div>
+
+  <div class="info-card hidden" id="deload-card" style="border-color:var(--rest)">
+    <div class="nudge-title" style="color:var(--rest)">🌿 Recovery suggested</div>
+    <div class="nudge-text">You've trained intensely this week. Consider a lighter Beginner session today.</div>
+  </div>
+
+  <div class="info-card hidden" id="nudge-card">
+    <div class="nudge-title" id="nudge-title">⬆ Progression</div>
+    <div class="nudge-text" id="nudge-text"></div>
+    <div class="overload-bar-wrap"><div class="overload-bar" id="overload-bar"></div></div>
+  </div>
+
+  <!-- Custom workouts (collapsible when plan active) -->
+  <div class="collapse-section" id="programs-section">
+    <button class="collapse-toggle" onclick="document.getElementById('programs-section').classList.toggle('collapsed')">
+      <span id="programs-section-label">Choose program</span>
+    </button>
+    <div class="collapse-content">
+      <div class="program-list" id="program-list"></div>
+      <div id="custom-controls" class="card flex-col gap-md">
+        <div class="label">Customize</div>
+        <div class="card-row"><div><div class="label">Hold (sec)</div></div>
+          <div class="stepper"><button class="stepper-btn" onclick="adj('hold',-1)">−</button><div class="stepper-val" id="val-hold">5</div><button class="stepper-btn" onclick="adj('hold',1)">+</button></div></div>
+        <div class="divider"></div>
+        <div class="card-row"><div><div class="label">Rest (sec)</div></div>
+          <div class="stepper"><button class="stepper-btn" onclick="adj('rest',-1)">−</button><div class="stepper-val" id="val-rest">5</div><button class="stepper-btn" onclick="adj('rest',1)">+</button></div></div>
+        <div class="divider"></div>
+        <div class="card-row"><div><div class="label">Reps</div></div>
+          <div class="stepper"><button class="stepper-btn" onclick="adj('reps',-1)">−</button><div class="stepper-val" id="val-reps">10</div><button class="stepper-btn" onclick="adj('reps',1)">+</button></div></div>
+        <div class="divider"></div>
+        <div class="card-row"><div><div class="label">Sets</div></div>
+          <div class="stepper"><button class="stepper-btn" onclick="adj('sets',-1)">−</button><div class="stepper-val" id="val-sets">3</div><button class="stepper-btn" onclick="adj('sets',1)">+</button></div></div>
+      </div>
+      <button class="btn btn-primary" id="btn-begin-custom" onclick="startSession()">Begin Session</button>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="flex-row gap-sm">
+    <button class="btn btn-ghost" style="flex:1" onclick="showScreen('history')">History</button>
+    <button class="btn btn-ghost" style="flex:1" onclick="showScreen('settings')">Settings</button>
+  </div>
+</div>
+
+<!-- SESSION -->
+<div id="screen-session" class="screen">
+  <div class="session-header">
+    <button class="btn btn-icon" onclick="confirmStop()">✕</button>
+    <div class="session-progress">
+      <span>Set <strong id="s-set-cur">1</strong>/<strong id="s-set-tot">3</strong></span>
+      <span class="block-label" id="s-block-label"></span>
+      <div style="display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap">
+        <div class="elapsed-pill" id="elapsed-pill"><span class="elapsed-dot"></span><span id="s-elapsed">00:00</span></div>
+        <div class="elapsed-pill position-pill hidden" id="position-pill"><span id="s-position-icon">🛌</span><span id="s-position-label">Lying</span></div>
+      </div>
+    </div>
+    <button class="btn btn-icon" id="btn-audio" onclick="cycleAudioMode()">🔊</button>
+  </div>
+  <div class="position-banner hidden" id="position-banner">
+    <div class="icon" id="pb-icon">🛌</div>
+    <div><span class="label-strong" id="pb-label">Position</span><span id="pb-instruction"></span></div>
+  </div>
+  <div class="ring-wrap">
+    <div class="ring-pulse" id="ring-pulse"></div>
+    <svg viewBox="0 0 120 120">
+      <circle class="ring-bg" cx="60" cy="60" r="52"/>
+      <circle class="ring-track" id="ring-track" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="0"/>
+    </svg>
+    <div class="ring-center">
+      <div class="ring-seconds" id="ring-seconds">–</div>
+      <div class="ring-phase" id="ring-phase">ready</div>
+    </div>
+  </div>
+  <div class="breath-guide" id="breath-guide"><div class="breath-dot"></div><span id="breath-text">Inhale</span></div>
+  <div class="rep-dots" id="rep-dots"></div>
+  <div class="set-info">
+    <div class="set-num" id="s-set-label">Set 1</div>
+    <div class="next-label" id="s-next-label"></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="session-controls">
+    <button class="btn btn-icon" onclick="skipPhase()" title="Skip">⏭</button>
+    <button class="btn-main-action" id="btn-pause" onclick="togglePause()">Pause</button>
+    <div style="width:48px"></div>
+  </div>
+  <div style="height:16px"></div>
+</div>
+
+<!-- BLOCK TRANSITION -->
+<div id="block-transition" class="block-transition">
+  <div class="label">Next Block</div>
+  <h2 id="trans-title">Quick Flicks</h2>
+  <div class="sub" id="trans-sub"></div>
+  <div class="ring-seconds" id="trans-count" style="color:var(--accent);font-size:3rem">3</div>
+</div>
+
+<!-- COMPLETE -->
+<div id="screen-complete" class="screen">
+  <div class="complete-icon">🌸</div>
+  <h2>Session<br>Complete</h2>
+  <div class="complete-stats">
+    <div class="stat-box"><div class="stat-val" id="c-reps">–</div><div class="stat-lbl">Total Reps</div></div>
+    <div class="stat-box"><div class="stat-val" id="c-sets">–</div><div class="stat-lbl">Sets Done</div></div>
+    <div class="stat-box"><div class="stat-val" id="c-hold">–</div><div class="stat-lbl">Hold (sec)</div></div>
+    <div class="stat-box"><div class="stat-val" id="c-duration">–</div><div class="stat-lbl">Duration</div></div>
+  </div>
+  <div class="struggled-note hidden" id="struggled-note">Many pauses or skips — won't count toward progression</div>
+  <div class="info-card w-full hidden" id="c-progress-box">
+    <div class="nudge-title" id="c-progress-title"></div>
+    <div class="nudge-text" id="c-progress-text"></div>
+    <div class="flex-row gap-sm mt-sm" id="c-progress-actions"></div>
+  </div>
+  <button class="btn btn-primary w-full" onclick="showScreen('home')">Back to Home</button>
+</div>
+
+<!-- HISTORY -->
+<div id="screen-history" class="screen">
+  <div class="flex-row align-center" style="gap:12px">
+    <button class="btn btn-icon" onclick="showScreen('home')" style="font-size:1rem">←</button>
+    <h2>History</h2>
+  </div>
+  <div class="card chart-card hidden" id="chart-wrap">
+    <div class="chart-header">
+      <span class="chart-title">Hold time trend</span>
+      <span class="chart-meta" id="chart-range">last 20</span>
+    </div>
+    <svg class="chart-svg" id="chart-svg" viewBox="0 0 300 140" preserveAspectRatio="none"></svg>
+    <div class="chart-summary">
+      <div class="chart-summary-item"><div class="chart-summary-val" id="stat-avg-hold">–</div><div class="chart-summary-lbl">Avg hold</div></div>
+      <div class="chart-summary-item"><div class="chart-summary-val" id="stat-avg-reps">–</div><div class="chart-summary-lbl">Avg reps</div></div>
+      <div class="chart-summary-item"><div class="chart-summary-val" id="stat-best-hold">–</div><div class="chart-summary-lbl">Best hold</div></div>
+    </div>
+  </div>
+  <div class="history-list" id="history-list"></div>
+  <div class="data-actions">
+    <button class="btn-sm" onclick="exportData()">⬇ Export</button>
+    <button class="btn-sm" onclick="document.getElementById('file-import').click()">⬆ Import</button>
+    <button class="btn-sm" onclick="clearHistory()">🗑 Clear</button>
+  </div>
+  <input type="file" id="file-import" accept="application/json" onchange="importData(this.files[0])">
+</div>
+
+<!-- PLAN OVERVIEW -->
+<div id="screen-plan" class="screen">
+  <div class="flex-row align-center" style="gap:12px">
+    <button class="btn btn-icon" onclick="showScreen('home')" style="font-size:1rem">←</button>
+    <h2>The Plan</h2>
+  </div>
+  <div class="plan-overview-summary">
+    <div class="plan-overview-title">Sexual Function</div>
+    <div class="plan-overview-sub">12 weeks · 3 sessions/day · Clinical-standard progression for ejaculatory control & function</div>
+    <div id="plan-overview-status" class="mt-sm"></div>
+  </div>
+  <div class="plan-week-list" id="plan-week-list"></div>
+  <div class="flex-col gap-sm" id="plan-actions"></div>
+  <div style="height:24px"></div>
+</div>
+
+<!-- SETTINGS -->
+<div id="screen-settings" class="screen">
+  <div class="flex-row align-center" style="gap:12px">
+    <button class="btn btn-icon" onclick="showScreen('home')" style="font-size:1rem">←</button>
+    <h2>Settings</h2>
+  </div>
+  <div class="label">Cues</div>
+  <div class="settings-group">
+    <div class="settings-row"><div><div class="settings-row-label">Audio beeps</div><div class="settings-row-desc">Tones at phase transitions</div></div>
+      <label class="switch"><input type="checkbox" id="set-audio" onchange="updateSetting('audio',this.checked)"><span class="switch-slider"></span></label></div>
+    <div class="settings-row"><div><div class="settings-row-label">Voice cues</div><div class="settings-row-desc">Spoken "Hold", "Rest", "Release"</div></div>
+      <label class="switch"><input type="checkbox" id="set-voice" onchange="updateSetting('voice',this.checked)"><span class="switch-slider"></span></label></div>
+    <div class="settings-row"><div><div class="settings-row-label">Haptic feedback</div><div class="settings-row-desc">Vibration on phase changes</div></div>
+      <label class="switch"><input type="checkbox" id="set-haptic" onchange="updateSetting('haptic',this.checked)"><span class="switch-slider"></span></label></div>
+    <div class="settings-row"><div><div class="settings-row-label">Breathing guide</div><div class="settings-row-desc">Visual inhale/exhale pacer during rest</div></div>
+      <label class="switch"><input type="checkbox" id="set-breath" onchange="updateSetting('breath',this.checked)"><span class="switch-slider"></span></label></div>
+  </div>
+  <div class="label mt-sm">Screen</div>
+  <div class="settings-group">
+    <div class="settings-row"><div><div class="settings-row-label">Keep screen on</div><div class="settings-row-desc">Prevents dimming during workouts</div></div>
+      <label class="switch"><input type="checkbox" id="set-wake" onchange="updateSetting('wake',this.checked)"><span class="switch-slider"></span></label></div>
+    <div class="settings-row"><div><div class="settings-row-label">Theme</div><div class="settings-row-desc">Light, dark, or follow system</div></div>
+      <select class="settings-select" id="set-theme" onchange="updateSetting('theme',this.value)">
+        <option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option>
+      </select></div>
+  </div>
+  <div class="label mt-sm">Defaults</div>
+  <div class="settings-group">
+    <div class="settings-row"><div><div class="settings-row-label">Default program</div><div class="settings-row-desc">For ad-hoc workouts (off-plan)</div></div>
+      <select class="settings-select" id="set-default-prog" onchange="updateSetting('defaultProgram',this.value)">
+        <option value="beginner">Beginner</option><option value="intermediate">Intermediate</option>
+        <option value="advanced">Advanced</option><option value="quick">Quick Flicks</option>
+        <option value="ptStandard">PT Standard</option><option value="custom">Custom</option>
+      </select></div>
+  </div>
+  <div class="label mt-sm">Data</div>
+  <div class="settings-group">
+    <div class="settings-row"><div><div class="settings-row-label">Reset progression</div><div class="settings-row-desc">Start all program levels from scratch</div></div>
+      <button class="btn-sm" onclick="resetProgression()">Reset</button></div>
+  </div>
+  <div class="wake-warn mt-sm">💡 If the screen still dims, increase your phone's screen timeout in system settings.</div>
+  <div class="spacer"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════ STORAGE ══════
+const KEY = 'pft_data';
+const DEFAULT_SETTINGS = { audio:true, voice:false, haptic:true, breath:true, wake:true, theme:'auto', defaultProgram:'beginner' };
+function loadData() {
+  try {
+    const d = JSON.parse(localStorage.getItem(KEY)) || {};
+    d.sessions = d.sessions || []; d.progression = d.progression || {};
+    d.settings = { ...DEFAULT_SETTINGS, ...(d.settings || {}) };
+    return d;
+  } catch { return { sessions:[], progression:{}, settings:{...DEFAULT_SETTINGS} }; }
+}
+function saveData(d) { localStorage.setItem(KEY, JSON.stringify(d)); }
+function getData() { return loadData(); }
+function updateData(fn) { const d = loadData(); fn(d); saveData(d); }
+let settings = loadData().settings;
+
+// ══════ PROGRAMS (ad-hoc, off-plan) ══════
+const PROGRAMS = {
+  beginner:     { name:'Beginner',     badge:'Starter',  base:{hold:3,rest:6,reps:10,sets:3}, maxLevel:3,
+                  blocks:p => [{type:'slow',hold:p.hold,rest:p.rest,reps:p.reps,sets:p.sets}] },
+  intermediate: { name:'Intermediate', badge:'Level up', base:{hold:6,rest:6,reps:12,sets:3}, maxLevel:3,
+                  blocks:p => [{type:'slow',hold:p.hold,rest:p.rest,reps:p.reps,sets:p.sets}] },
+  advanced:     { name:'Advanced',     badge:'Strength', base:{hold:10,rest:10,reps:15,sets:4}, maxLevel:5,
+                  blocks:p => [{type:'slow',hold:p.hold,rest:p.rest,reps:p.reps,sets:p.sets}] },
+  quick:        { name:'Quick Flicks', badge:'Speed',    base:{hold:1,rest:1,reps:20,sets:3}, maxLevel:3,
+                  blocks:p => [{type:'quick',hold:p.hold,rest:p.rest,reps:p.reps,sets:p.sets}],
+                  levelFn:(l,b) => ({...b, reps:b.reps + l*5}) },
+  ptStandard:   { name:'PT Standard',  badge:'Clinical', base:{hold:6,rest:6,reps:10,sets:1}, maxLevel:4,
+                  desc:'Slow holds + quick flicks + release',
+                  blocks:p => [
+                    {type:'slow',hold:p.hold,rest:p.rest,reps:p.reps,sets:p.sets},
+                    {type:'quick',hold:1,rest:1,reps:10,sets:1},
+                    {type:'release',hold:10,rest:5,reps:3,sets:1}] },
+  custom:       { name:'Custom',       badge:'Custom',   base:{hold:5,rest:5,reps:10,sets:3}, maxLevel:0,
+                  desc:'Your own parameters',
+                  blocks:p => [{type:'slow',hold:p.hold,rest:p.rest,reps:p.reps,sets:p.sets}] },
+};
+function getProgramParams(id) {
+  const prog = PROGRAMS[id]; if (!prog) return null;
+  if (id === 'custom') return { ...customVals };
+  const lvl = getData().progression[id] || 0;
+  if (prog.levelFn) return prog.levelFn(lvl, prog.base);
+  return { ...prog.base, hold: prog.base.hold + lvl };
+}
+function getProgramDesc(id) {
+  const prog = PROGRAMS[id]; if (prog.desc) return prog.desc;
+  const p = getProgramParams(id);
+  if (id === 'quick') return `${p.hold}s flick · ${p.rest}s rest · ${p.reps} reps · ${p.sets} sets`;
+  return `${p.hold}s hold · ${p.rest}s rest · ${p.reps} reps · ${p.sets} sets`;
+}
+let selectedProg = settings.defaultProgram || 'beginner';
+let customVals = { hold:5, rest:5, reps:10, sets:3 };
+
+// ══════ 12-WEEK PLAN — Sexual Function ══════
+const slow = (h, r, reps, sets=1) => ({type:'slow', hold:h, rest:r, reps, sets});
+const quick = (reps, sets=1) => ({type:'quick', hold:1, rest:1, reps, sets});
+const pulse = (h, reps, sets=1) => ({type:'quick', hold:h, rest:1, reps, sets});
+const release = (h, reps=2) => ({type:'release', hold:h, rest:5, reps, sets:1});
+
+const PLAN = {
+  id: '12wk-sexual',
+  name: 'Sexual Function — 12 Week Plan',
+  totalWeeks: 12,
+  totalDays: 84,
+  weeks: [
+    { n:1, phase:'Foundation', focus:'Identify and isolate the muscles. Learn relaxation as much as contraction.',
+      sessions:[
+        {id:'m', label:'Morning', name:'Awareness', desc:'8 holds × 5s', blocks:[slow(5,5,8)]},
+        {id:'d', label:'Midday',  name:'Quick + Release', desc:'5 flicks + 2 releases', blocks:[quick(5), release(10,2)]},
+        {id:'e', label:'Evening', name:'Endurance', desc:'8 holds × 5s', blocks:[slow(5,5,8)]},
+      ]},
+    { n:2, phase:'Foundation', focus:'Strengthen the mind-muscle connection. Add volume gently.',
+      sessions:[
+        {id:'m', label:'Morning', name:'Holds', desc:'10 holds × 5s', blocks:[slow(5,5,10)]},
+        {id:'d', label:'Midday',  name:'Flicks + Release', desc:'8 flicks + 3 releases', blocks:[quick(8), release(10,3)]},
+        {id:'e', label:'Evening', name:'Holds', desc:'10 holds × 5s', blocks:[slow(5,5,10)]},
+      ]},
+    { n:3, phase:'Build', focus:'Extend hold time. Begin endurance development.',
+      sessions:[
+        {id:'m', label:'Morning', name:'Holds', desc:'10 holds × 6s', blocks:[slow(6,6,10)]},
+        {id:'d', label:'Midday',  name:'Flicks + Release', desc:'10 flicks + 3 releases', blocks:[quick(10), release(10,3)]},
+        {id:'e', label:'Evening', name:'Holds', desc:'10 holds × 6s', blocks:[slow(6,6,10)]},
+      ]},
+    { n:4, phase:'Build', focus:'Reach 7-second holds. Quick contractions stronger and more controlled.',
+      sessions:[
+        {id:'m', label:'Morning', name:'Holds', desc:'10 holds × 7s', blocks:[slow(7,7,10)]},
+        {id:'d', label:'Midday',  name:'Flicks + Release', desc:'10 flicks + 3 releases', blocks:[quick(10), release(10,3)]},
+        {id:'e', label:'Evening', name:'Holds', desc:'12 holds × 7s', blocks:[slow(7,7,12)]},
+      ]},
+    { n:5, phase:'Strength', focus:'Build true strength. Multiple sets of 8-second holds.',
+      sessions:[
+        {id:'m', label:'Morning', name:'Strength', desc:'2 sets × 10 × 8s', blocks:[slow(8,8,10,2)]},
+        {id:'d', label:'Midday',  name:'Power Flicks', desc:'12 flicks + 3 long releases', blocks:[quick(12), release(12,3)]},
+        {id:'e', label:'Evening', name:'Holds', desc:'10 holds × 8s', blocks:[slow(8,8,10)]},
+      ]},
+    { n:6, phase:'Strength', focus:'Reach the 10-second goal. This is a key milestone.',
+      sessions:[
+        {id:'m', label:'Morning', name:'Strength', desc:'2 sets × 10 × 10s', blocks:[slow(10,10,10,2)]},
+        {id:'d', label:'Midday',  name:'Power Flicks', desc:'12 flicks × 2 + releases', blocks:[quick(12,2), release(12,3)]},
+        {id:'e', label:'Evening', name:'Holds', desc:'10 holds × 10s', blocks:[slow(10,10,10)]},
+      ]},
+    { n:7, phase:'Power & Control', focus:'Mix protocols. Develop control under different demands.',
+      sessions:[
+        {id:'m', label:'Morning', name:'Strength', desc:'2 sets × 10 × 10s', blocks:[slow(10,10,10,2)]},
+        {id:'d', label:'Midday',  name:'Mixed Protocol', desc:'PT-style: holds + flicks + release', blocks:[slow(8,8,8), quick(10), release(10,3)]},
+        {id:'e', label:'Evening', name:'Endurance', desc:'2 sets × 12 × 10s', blocks:[slow(10,10,12,2)]},
+      ]},
+    { n:8, phase:'Power & Control', focus:'High-volume power work — central to ejaculatory control.',
+      sessions:[
+        {id:'m', label:'Morning', name:'Strength', desc:'2 sets × 12 × 10s', blocks:[slow(10,10,12,2)]},
+        {id:'d', label:'Midday',  name:'Power Flicks', desc:'15 flicks × 2 sets + release', blocks:[quick(15,2), release(12,3)]},
+        {id:'e', label:'Evening', name:'Holds', desc:'12 holds × 10s', blocks:[slow(10,10,12)]},
+      ]},
+    { n:9, phase:'Endurance + Pulse', focus:'Pulse patterns mimic rhythmic control. Highly relevant to your goal.',
+      sessions:[
+        {id:'m', label:'Morning', name:'Endurance', desc:'2 sets × 12 × 10s', blocks:[slow(10,10,12,2)]},
+        {id:'d', label:'Midday',  name:'Pulse Work', desc:'3-second pulses × 5 × 3 sets', blocks:[pulse(3,5,3), release(10,3)]},
+        {id:'e', label:'Evening', name:'Endurance', desc:'2 sets × 12 × 10s', blocks:[slow(10,10,12,2)]},
+      ]},
+    { n:10, phase:'Endurance', focus:'Peak volume. Sustain through fatigue.',
+      sessions:[
+        {id:'m', label:'Morning', name:'Long Endurance', desc:'2 sets × 15 × 10s', blocks:[slow(10,10,15,2)]},
+        {id:'d', label:'Midday',  name:'Power Flicks', desc:'15 flicks × 2 sets + release', blocks:[quick(15,2), release(12,3)]},
+        {id:'e', label:'Evening', name:'Holds', desc:'12 holds × 10s', blocks:[slow(10,10,12)]},
+      ]},
+    { n:11, phase:'Mastery', focus:'Functional integration. Shorter rests = real-world demand.',
+      sessions:[
+        {id:'m', label:'Morning', name:'Hard Holds', desc:'2 sets × 12 × 10s/5s rest', blocks:[slow(10,5,12,2)]},
+        {id:'d', label:'Midday',  name:'Mixed Protocol', desc:'Holds + flicks + release', blocks:[slow(8,5,10), quick(12), release(15,3)]},
+        {id:'e', label:'Evening', name:'Strength', desc:'2 sets × 12 × 10s', blocks:[slow(10,10,12,2)]},
+      ]},
+    { n:12, phase:'Maintenance', focus:'Lock in gains. This level becomes your ongoing baseline.',
+      sessions:[
+        {id:'m', label:'Morning', name:'Strength', desc:'2 sets × 12 × 10s', blocks:[slow(10,10,12,2)]},
+        {id:'d', label:'Midday',  name:'Power + Release', desc:'12 flicks × 2 + long release', blocks:[quick(12,2), release(15,3)]},
+        {id:'e', label:'Evening', name:'Strength', desc:'2 sets × 12 × 10s', blocks:[slow(10,10,12,2)]},
+      ]},
+  ],
+};
+
+// ══════ POSITION PROGRESSION ══════
+// Evidence: Position changes muscle activation 16% (supine) → 40%+ (squat). Functional carryover requires
+// training in the position where leakage/control is needed (Mayo, Physiopedia, Frontiers 2026).
+const POSITIONS = {
+  lying:      { icon:'🛌', label:'Lying',      instruction:'Lie on your back, knees bent, feet flat. Shoulders relaxed. Easiest position — least gravity.' },
+  sitting:    { icon:'🪑', label:'Sitting',    instruction:'Sit upright on a firm chair. Feet flat. Slight inward curve in lower back. Avoid slumping.' },
+  standing:   { icon:'🧍', label:'Standing',   instruction:'Stand tall, feet hip-width apart, knees soft. Most functionally relevant position.' },
+  functional: { icon:'🚶', label:'Functional', instruction:'Squeeze before/during a daily action — standing up, lifting, coughing, climbing stairs.' },
+};
+
+// Position by week × session [morning, midday, evening]
+const POSITION_PROGRESSION = [
+  ['lying','lying','lying'],            // W1 — pure foundation
+  ['lying','lying','lying'],            // W2
+  ['lying','sitting','lying'],          // W3 — introduce sitting
+  ['lying','sitting','sitting'],        // W4
+  ['lying','sitting','standing'],       // W5 — introduce standing
+  ['sitting','sitting','standing'],     // W6
+  ['sitting','standing','standing'],    // W7
+  ['sitting','standing','standing'],    // W8
+  ['standing','sitting','standing'],    // W9
+  ['standing','standing','functional'], // W10 — introduce functional
+  ['functional','standing','standing'], // W11
+  ['standing','functional','standing'], // W12
+];
+const SESSION_ORDER = { m:0, d:1, e:2 };
+function getSessionPosition(weekN, sessId) {
+  const week = POSITION_PROGRESSION[weekN - 1] || POSITION_PROGRESSION[0];
+  return week[SESSION_ORDER[sessId] ?? 0] || 'lying';
+}
+
+function totalRepsForWeek(week) {
+  return week.sessions.reduce((sum, s) => sum + s.blocks.reduce((a,b) => a + b.reps * b.sets, 0), 0);
+}
+
+// ══════ SESSION STATE ══════
+let session = null, timer = null, breathTimer = null, wakeLock = null, audioCtx = null;
+let silentOsc = null, silentGain = null;
+
+// ══════ AUDIO ══════
+function getAudioCtx() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
+function beep(f, d=0.1, v=0.25, type='sine') {
+  if (!settings.audio || settings.voice) return;
+  try {
+    const ctx = getAudioCtx(), o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(v, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + d);
+    o.start(); o.stop(ctx.currentTime + d);
+  } catch {}
+}
+const beepHold = () => beep(660, .12, .2);
+const beepRest = () => beep(440, .18, .18);
+const beepRelease = () => beep(392, .22, .18);
+const beepDone = () => { beep(880, .08, .22); setTimeout(() => beep(1100, .1, .22), 120); };
+const beepFlick = () => beep(520, .06, .18, 'square');
+const beepPrep = () => beep(330, .08, .18);
+
+function say(text) {
+  if (!settings.voice) return;
+  try { if ('speechSynthesis' in window) { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.rate=1.05; u.volume=.9; speechSynthesis.speak(u); } } catch {}
+}
+function cueHold(t) { if (settings.voice) say(t==='quick'?'Flick':t==='release'?'Release':'Hold'); else t==='quick'?beepFlick():t==='release'?beepRelease():beepHold(); }
+function cueRest(r) { if (settings.voice) say(r?'Breathe':'Rest'); else beepRest(); }
+function cuePrep(n) { if (settings.voice) say(String(n)); else beepPrep(); }
+function cueDone() { if (settings.voice) say('Well done'); else beepDone(); }
+function vibrate(p) { if (!settings.haptic) return; try { navigator.vibrate && navigator.vibrate(p); } catch {} }
+
+// ══════ WAKE LOCK ══════
+async function acquireWakeLock() {
+  if (!settings.wake) return;
+  try { if ('wakeLock' in navigator) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); } } catch {}
+  startSilentAudio();
+}
+function releaseWakeLock() { try { wakeLock && wakeLock.release(); } catch {} wakeLock = null; stopSilentAudio(); }
+function startSilentAudio() {
+  try {
+    const ctx = getAudioCtx(); if (ctx.state === 'suspended') ctx.resume().catch(()=>{});
+    if (silentOsc) return;
+    silentOsc = ctx.createOscillator(); silentGain = ctx.createGain();
+    silentGain.gain.value = 0.0001;
+    silentOsc.connect(silentGain); silentGain.connect(ctx.destination);
+    silentOsc.frequency.value = 20; silentOsc.start();
+  } catch {}
+}
+function stopSilentAudio() { try { if (silentOsc) { silentOsc.stop(); silentOsc.disconnect(); silentGain.disconnect(); silentOsc = silentGain = null; } } catch {} }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && session && !session.paused) acquireWakeLock(); });
+
+// ══════ ROUTING ══════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  if (id === 'home') refreshHome();
+  if (id === 'history') renderHistory();
+  if (id === 'settings') renderSettings();
+  if (id === 'plan') renderPlanScreen();
+}
+
+// ══════ PLAN LOGIC ══════
+function getPlanState() { return getData().activePlan || null; }
+
+function startPlan() {
+  updateData(d => { d.activePlan = { id:PLAN.id, startDate:todayStr(), completed:{} }; });
+  showToast('Plan started — let\'s go!');
+  refreshHome();
+}
+
+function resetPlan() {
+  if (!confirm('Reset the plan? Your session history is kept.')) return;
+  updateData(d => { delete d.activePlan; });
+  showToast('Plan reset');
+  refreshHome();
+}
+
+function pausePlan() {
+  if (!confirm('Pause and remove the active plan? You can restart anytime.')) return;
+  updateData(d => { delete d.activePlan; });
+  refreshHome();
+}
+
+function getPlanProgress() {
+  const p = getPlanState(); if (!p) return null;
+  const start = new Date(p.startDate + 'T00:00:00');
+  const today = new Date(todayStr() + 'T00:00:00');
+  const dayNum = Math.floor((today - start) / 86400000) + 1;
+  if (dayNum > PLAN.totalDays) return { done:true, dayNum:PLAN.totalDays, weekNum:PLAN.totalWeeks, week:PLAN.weeks[PLAN.totalWeeks-1] };
+  const weekNum = Math.max(1, Math.min(PLAN.totalWeeks, Math.ceil(dayNum / 7)));
+  return { dayNum, weekNum, week:PLAN.weeks[weekNum-1], done:false };
+}
+
+function getTodayPlan() {
+  const prog = getPlanProgress(); if (!prog) return null;
+  const completed = (getPlanState().completed || {})[todayStr()] || [];
+  const sessions = prog.week.sessions.map(s => ({ ...s, done: completed.includes(s.id) }));
+  return { ...prog, sessions };
+}
+
+function suggestedSessionId(sessions) {
+  // Suggest the next undone session. Prefer time-of-day appropriate.
+  const undone = sessions.filter(s => !s.done);
+  if (!undone.length) return null;
+  const hour = new Date().getHours();
+  const wanted = hour < 11 ? 'm' : hour < 17 ? 'd' : 'e';
+  return (undone.find(s => s.id === wanted) || undone[0]).id;
+}
+
+function startPlanSession(sessId) {
+  const today = getTodayPlan(); if (!today) return;
+  const s = today.sessions.find(x => x.id === sessId);
+  if (!s) return;
+  const position = getSessionPosition(today.weekNum, sessId);
+  startCustomSession(s.blocks, { fromPlan:true, planSessionId:sessId, planSessionName:s.name, planWeekN:today.weekNum, position });
+}
+
+function markPlanSessionDone(sessId) {
+  const date = todayStr();
+  updateData(d => {
+    if (!d.activePlan) return;
+    d.activePlan.completed = d.activePlan.completed || {};
+    const arr = new Set(d.activePlan.completed[date] || []);
+    arr.add(sessId);
+    d.activePlan.completed[date] = [...arr];
+  });
+}
+
+function getPlanCompletionPercent() {
+  const p = getPlanState(); if (!p) return 0;
+  const completed = p.completed || {};
+  const totalDone = Object.values(completed).reduce((a,arr) => a + arr.length, 0);
+  const totalPossible = PLAN.totalDays * 3;
+  return Math.min(100, Math.round((totalDone / totalPossible) * 100));
+}
+
+// ══════ HOME ══════
+function renderProgramList() {
+  const wrap = document.getElementById('program-list'); wrap.innerHTML = '';
+  Object.entries(PROGRAMS).forEach(([id, prog]) => {
+    const card = document.createElement('div');
+    card.className = 'program-card' + (id === selectedProg ? ' selected' : '');
+    card.onclick = () => selectProgram(id, card);
+    const lvl = getData().progression[id] || 0;
+    const dots = prog.maxLevel > 0 ? `<div class="program-level-dots">${Array.from({length:prog.maxLevel},(_,i) => `<span class="program-level-dot ${i<lvl?'filled':'empty'}"></span>`).join('')}</div>` : '';
+    const tag = lvl > 0 ? `<span class="program-level-tag">Lvl ${lvl}</span>` : '';
+    card.innerHTML = `<div><div class="program-name">${prog.name}${tag}</div><div class="program-desc">${getProgramDesc(id)}</div>${dots}</div><span class="program-badge">${prog.badge||''}</span>`;
+    wrap.appendChild(card);
+  });
+}
+
+function refreshHome() {
+  const d = getData(), sessions = d.sessions;
+  document.getElementById('streak-num').textContent = calcStreak(sessions);
+  document.getElementById('total-sessions').textContent = sessions.length;
+  renderWeekly(sessions); renderResume(d); renderDeload(sessions);
+  renderPlanCard();
+  renderProgramList();
+  document.getElementById('custom-controls').classList.toggle('visible', selectedProg === 'custom');
+  renderNudge(selectedProg, sessions);
+
+  // Collapse programs if plan active
+  const planActive = !!getPlanState();
+  const sec = document.getElementById('programs-section');
+  document.getElementById('programs-section-label').textContent = planActive ? 'Or do a custom workout' : 'Choose program';
+  if (planActive) sec.classList.add('collapsed'); else sec.classList.remove('collapsed');
+}
+
+function renderPlanCard() {
+  const planActive = !!getPlanState();
+  const card = document.getElementById('plan-active-card');
+  const cta = document.getElementById('plan-cta-card');
+
+  if (!planActive) {
+    card.classList.add('hidden');
+    cta.classList.remove('hidden');
+    return;
+  }
+  cta.classList.add('hidden');
+  card.classList.remove('hidden');
+
+  const today = getTodayPlan();
+  if (!today) { card.classList.add('hidden'); return; }
+
+  if (today.done) {
+    card.innerHTML = `
+      <div class="plan-header-row">
+        <div><div class="plan-phase-tag">Complete</div><div class="plan-week-num">🌸 Plan finished</div></div>
+        <button class="btn-sm" onclick="showScreen('plan')">View plan</button>
+      </div>
+      <div class="plan-focus">You've completed all 12 weeks. Keep going with maintenance sessions, or restart for another cycle.</div>
+      <button class="btn btn-primary" style="padding:12px;font-size:.9rem" onclick="resetPlan()">Restart plan</button>`;
+    return;
+  }
+
+  document.getElementById('plan-phase-tag').textContent = today.week.phase;
+  document.getElementById('plan-week-num').textContent = today.weekNum;
+  document.getElementById('plan-focus').textContent = today.week.focus;
+  document.getElementById('plan-day-num').textContent = today.dayNum;
+  document.getElementById('plan-pct').textContent = getPlanCompletionPercent();
+  document.getElementById('plan-progress-fill').style.width = (today.dayNum / PLAN.totalDays * 100) + '%';
+
+  const sessWrap = document.getElementById('plan-sessions');
+  sessWrap.innerHTML = '';
+  const suggestedId = suggestedSessionId(today.sessions);
+
+  today.sessions.forEach(s => {
+    const pos = getSessionPosition(today.weekNum, s.id);
+    const posInfo = POSITIONS[pos];
+    const div = document.createElement('div');
+    div.className = 'plan-session' + (s.done ? ' done' : '') + (s.id === suggestedId ? ' suggested' : '');
+    if (!s.done) div.onclick = () => startPlanSession(s.id);
+    div.innerHTML = `
+      <div class="plan-sess-icon">${s.done ? '✓' : ''}</div>
+      <div class="plan-sess-info">
+        <div class="plan-sess-time">${s.label} <span style="color:var(--release);font-size:.78rem;margin-left:4px">${posInfo.icon} ${posInfo.label}</span></div>
+        <div class="plan-sess-name">${s.name}</div>
+        <div class="plan-sess-detail">${s.desc}</div>
+      </div>
+      <div class="plan-sess-action">${s.done ? 'Done' : (s.id === suggestedId ? '▶ Start' : 'Start')}</div>`;
+    sessWrap.appendChild(div);
+  });
+}
+
+function renderWeekly(sessions) {
+  const wk = sessions.filter(s => s.ts >= Date.now() - 7*86400000);
+  const card = document.getElementById('weekly-card');
+  if (!wk.length) { card.classList.add('hidden'); return; }
+  card.classList.remove('hidden');
+  document.getElementById('week-sessions').textContent = wk.length;
+  document.getElementById('week-reps').textContent = wk.reduce((a,s)=>a+(s.reps||0),0);
+  document.getElementById('week-avg').textContent = (wk.reduce((a,s)=>a+(s.hold||0),0)/wk.length).toFixed(1)+'s';
+}
+
+function renderResume(d) {
+  const card = document.getElementById('resume-card'), a = d.activeSession;
+  if (!a || Date.now() - a.savedAt > 3600000) { card.classList.add('hidden'); return; }
+  card.classList.remove('hidden');
+  const label = a.fromPlan ? `Plan · ${a.planSessionName}` : (PROGRAMS[a.prog]?.name || a.prog);
+  document.getElementById('resume-text').textContent = `${label} · set ${a.currentSet}, rep ${a.currentRep}`;
+}
+
+function renderDeload(sessions) {
+  const card = document.getElementById('deload-card');
+  const past7 = sessions.filter(s => Date.now() - s.ts < 7*86400000);
+  const intenseDays = new Set(past7.filter(s => ['intermediate','advanced','ptStandard'].includes(s.prog)).map(s => s.date));
+  const trainedToday = sessions.some(s => s.date === todayStr());
+  // Don't show deload if plan is active (plan handles intensity)
+  const show = !getPlanState() && intenseDays.size >= 5 && !trainedToday;
+  card.classList.toggle('hidden', !show);
+}
+
+function calcStreak(sessions) {
+  if (!sessions.length) return 0;
+  const dates = [...new Set(sessions.map(s=>s.date))].sort().reverse();
+  const today = todayStr(), yest = new Date(Date.now()-86400000).toISOString().slice(0,10);
+  if (dates[0] !== today && dates[0] !== yest) return 0;
+  let streak = 1;
+  for (let i = 1; i < dates.length; i++) {
+    if (Math.round((new Date(dates[i-1]) - new Date(dates[i]))/86400000) === 1) streak++; else break;
+  }
+  return streak;
+}
+
+function renderNudge(id, sessions) {
+  const card = document.getElementById('nudge-card');
+  if (id === 'custom' || getPlanState()) { card.classList.add('hidden'); return; }
+  const prog = PROGRAMS[id], lvl = getData().progression[id] || 0;
+  const eligible = sessions.filter(s => s.prog === id && !s.struggled && (s.levelAtTime||0) >= lvl);
+  const T = 3;
+  card.classList.remove('hidden');
+  const title = document.getElementById('nudge-title'), text = document.getElementById('nudge-text'), bar = document.getElementById('overload-bar');
+  if (lvl >= prog.maxLevel) {
+    if (eligible.length >= T) {
+      const next = nextProgramSuggestion(id);
+      title.textContent = '⬆ Time to level up';
+      text.textContent = next ? `You've mastered ${prog.name}. Try ${next} for more challenge.` : `Maxed out. Try Custom mode.`;
+      bar.style.width = '100%';
+    } else {
+      title.textContent = '⬆ Progression';
+      const r = T - eligible.length;
+      text.textContent = `Max level. ${r} more clean session${r>1?'s':''} to unlock next program.`;
+      bar.style.width = (eligible.length/T*100) + '%';
+    }
+    return;
+  }
+  if (eligible.length >= T) {
+    title.textContent = '⬆ Ready to advance';
+    const p = getProgramParams(id);
+    const nv = id === 'quick' ? p.reps + 5 : p.hold + 1;
+    text.textContent = `Advance to level ${lvl+1}? Next: ${nv}${id==='quick'?' reps':'s hold'}.`;
+    bar.style.width = '100%';
+  } else {
+    title.textContent = '⬆ Progression';
+    const r = T - eligible.length;
+    text.textContent = `Complete ${r} more clean session${r>1?'s':''} to advance.`;
+    bar.style.width = (eligible.length/T*100) + '%';
+  }
+}
+function nextProgramSuggestion(id) { return { beginner:'Intermediate', intermediate:'Advanced', advanced:'PT Standard', ptStandard:null, quick:null }[id]; }
+
+function selectProgram(id, el) {
+  document.querySelectorAll('.program-card').forEach(c => c.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+  selectedProg = id;
+  document.getElementById('custom-controls').classList.toggle('visible', id === 'custom');
+  renderNudge(id, getData().sessions);
+}
+
+const LIMITS = { hold:[1,60], rest:[1,60], reps:[1,50], sets:[1,10] };
+function adj(k, dx) {
+  const [mn, mx] = LIMITS[k];
+  customVals[k] = Math.min(mx, Math.max(mn, customVals[k] + dx));
+  document.getElementById('val-'+k).textContent = customVals[k];
+}
+
+// ══════ PLAN SCREEN ══════
+function renderPlanScreen() {
+  const planActive = !!getPlanState();
+  const today = planActive ? getTodayPlan() : null;
+
+  // Status block
+  const statusEl = document.getElementById('plan-overview-status');
+  if (planActive) {
+    if (today.done) {
+      statusEl.innerHTML = `<div class="plan-phase-tag" style="text-align:center;color:var(--rest)">Plan complete 🌸</div>`;
+    } else {
+      statusEl.innerHTML = `<div class="plan-phase-tag" style="text-align:center">Active · Day ${today.dayNum} · Week ${today.weekNum}</div>`;
+    }
+  } else {
+    statusEl.innerHTML = `<div class="plan-phase-tag" style="text-align:center;color:var(--text-muted)">Not started</div>`;
+  }
+
+  // Week list
+  const wrap = document.getElementById('plan-week-list');
+  wrap.innerHTML = '';
+  PLAN.weeks.forEach(w => {
+    const isCurrent = today && !today.done && today.weekNum === w.n;
+    const isDone = today && (today.done || today.weekNum > w.n);
+    const card = document.createElement('div');
+    card.className = 'plan-week-card' + (isCurrent ? ' current' : '') + (isDone ? ' done' : '');
+    const totalReps = totalRepsForWeek(w);
+    const positions = [...new Set(POSITION_PROGRESSION[w.n - 1])].map(p => POSITIONS[p].icon).join(' ');
+    card.innerHTML = `
+      <div class="plan-week-num-badge">${w.n}</div>
+      <div class="plan-week-info">
+        <div class="plan-week-phase">${w.phase} · <span style="color:var(--release)">${positions}</span></div>
+        <div class="plan-week-name">${w.focus}</div>
+        <div class="plan-week-vol">~${totalReps} contractions/day · ${w.sessions.length} sessions</div>
+      </div>`;
+    wrap.appendChild(card);
+  });
+
+  // Actions
+  const actions = document.getElementById('plan-actions');
+  actions.innerHTML = '';
+  if (!planActive) {
+    actions.innerHTML = `<button class="btn btn-primary" onclick="startPlan()">Start the plan</button>`;
+  } else {
+    actions.innerHTML = `
+      <button class="btn btn-ghost" onclick="resetPlan()">Reset plan</button>
+      <button class="btn btn-ghost" onclick="pausePlan()" style="color:var(--text-muted)">End plan</button>`;
+  }
+}
+
+// ══════ SESSION CONSTRUCTION ══════
+function buildSession(id) {
+  const prog = PROGRAMS[id], params = getProgramParams(id);
+  return makeSession(id, prog.blocks(params), { holdTimeForLog: params.hold, levelAtTime: getData().progression[id] || 0 });
+}
+
+function makeSession(progId, blocks, meta = {}) {
+  return {
+    prog: progId,
+    levelAtTime: meta.levelAtTime || 0,
+    blocks, currentBlockIdx:0, currentSet:1, currentRep:1,
+    phase:'prep', timeLeft:3, paused:false, pauseCount:0, skipCount:0,
+    completedReps:0, startTime:Date.now(), totalPausedMs:0, pausedSince:null,
+    holdTimeForLog: meta.holdTimeForLog || blocks[0].hold,
+    fromPlan: !!meta.fromPlan,
+    planSessionId: meta.planSessionId || null,
+    planSessionName: meta.planSessionName || null,
+    planWeekN: meta.planWeekN || null,
+    position: meta.position || null,
+  };
+}
+
+function currentBlock() { return session.blocks[session.currentBlockIdx]; }
+
+function startSession() {
+  try { getAudioCtx().resume(); } catch {}
+  session = buildSession(selectedProg);
+  showScreen('session');
+  acquireWakeLock();
+  buildDots(); persistActive(); updateSessionUI(); tick();
+}
+
+function startCustomSession(blocks, meta) {
+  try { getAudioCtx().resume(); } catch {}
+  session = makeSession('_plan', blocks, meta);
+  showScreen('session');
+  acquireWakeLock();
+  buildDots(); persistActive(); updateSessionUI(); tick();
+}
+
+function resumeSession() {
+  const d = getData(); if (!d.activeSession) return;
+  try { getAudioCtx().resume(); } catch {}
+  session = d.activeSession; session.paused = false;
+  if (session.elapsedAtSave != null) { session.startTime = Date.now() - session.elapsedAtSave; session.totalPausedMs = 0; session.pausedSince = null; }
+  showScreen('session');
+  acquireWakeLock();
+  buildDots(); updateSessionUI(); tick();
+}
+function discardResume() { updateData(d => { delete d.activeSession; }); refreshHome(); }
+
+function buildDots() {
+  const wrap = document.getElementById('rep-dots'); wrap.innerHTML = '';
+  const b = currentBlock(); if (!b) return;
+  for (let i = 0; i < b.reps; i++) {
+    const d = document.createElement('div');
+    d.className = 'rep-dot' + (b.type === 'release' ? ' release-style' : b.type === 'quick' ? ' quick-style' : '');
+    d.id = 'dot-' + i;
+    wrap.appendChild(d);
+  }
+}
+function updateDots() {
+  const b = currentBlock(); if (!b) return;
+  for (let i = 0; i < b.reps; i++) {
+    const d = document.getElementById('dot-' + i); if (!d) continue;
+    d.classList.remove('done', 'current');
+    if (i < session.currentRep - 1) d.classList.add('done');
+    else if (i === session.currentRep - 1) d.classList.add('current');
+  }
+}
+
+function tick() {
+  clearInterval(timer); if (session.paused) return;
+  timer = setInterval(() => {
+    if (session.paused) return;
+    session.timeLeft--;
+    const b = currentBlock();
+    if (b && b.type === 'quick' && session.phase === 'hold' && b.hold === 1) beepFlick();
+    if (session.timeLeft <= 0) advancePhase();
+    else if (session.phase === 'prep' && session.timeLeft > 0) cuePrep(session.timeLeft);
+    updateSessionUI();
+  }, 1000);
+}
+
+function advancePhase() {
+  clearInterval(timer);
+  const b = currentBlock(); if (!b) return finishSession();
+  if (session.phase === 'prep') {
+    session.phase = 'hold'; session.timeLeft = b.hold; cueHold(b.type); vibrate([60]);
+  } else if (session.phase === 'hold') {
+    session.completedReps++;
+    if (session.currentRep >= b.reps) {
+      if (session.currentSet >= b.sets) {
+        if (session.currentBlockIdx + 1 < session.blocks.length) return triggerBlockTransition();
+        return finishSession();
+      }
+      session.phase = 'setrest'; session.timeLeft = Math.max(b.rest * 2, 10);
+      cueRest(b.type === 'release'); vibrate([80,60,80]);
+    } else {
+      session.phase = 'rest'; session.timeLeft = b.rest;
+      cueRest(b.type === 'release'); vibrate([40]);
+    }
+  } else if (session.phase === 'rest') {
+    session.currentRep++; session.phase = 'hold'; session.timeLeft = b.hold;
+    cueHold(b.type); vibrate([60]);
+  } else if (session.phase === 'setrest') {
+    session.currentSet++; session.currentRep = 1;
+    session.phase = 'hold'; session.timeLeft = b.hold;
+    cueHold(b.type); vibrate([60]); buildDots();
+  }
+  persistActive(); updateSessionUI(); tick();
+}
+
+function triggerBlockTransition() {
+  session.paused = true;
+  const next = session.blocks[session.currentBlockIdx + 1];
+  const overlay = document.getElementById('block-transition');
+  const names = { slow:'Slow Holds', quick:'Quick Flicks', release:'Full Release' };
+  const descs = {
+    slow:    `${next.reps} holds × ${next.hold}s · ${next.sets} set${next.sets>1?'s':''}`,
+    quick:   `${next.reps} fast contractions${next.sets>1?' × '+next.sets+' sets':''}`,
+    release: `${next.reps} long releases · fully relax`,
+  };
+  document.getElementById('trans-title').textContent = names[next.type];
+  document.getElementById('trans-sub').textContent = descs[next.type];
+  overlay.classList.add('visible');
+  say(`Next: ${names[next.type]}`);
+  let count = 3;
+  document.getElementById('trans-count').textContent = count;
+  const iv = setInterval(() => {
+    count--;
+    if (count <= 0) {
+      clearInterval(iv); overlay.classList.remove('visible');
+      session.currentBlockIdx++; session.currentSet = 1; session.currentRep = 1;
+      session.phase = 'hold'; session.timeLeft = currentBlock().hold;
+      session.paused = false;
+      buildDots(); cueHold(currentBlock().type); vibrate([60,40,60]);
+      persistActive(); updateSessionUI(); tick();
+    } else { document.getElementById('trans-count').textContent = count; cuePrep(count); }
+  }, 1000);
+}
+
+function getElapsedMs() {
+  if (!session) return 0;
+  let paused = session.totalPausedMs || 0;
+  if (session.pausedSince) paused += Date.now() - session.pausedSince;
+  return Date.now() - session.startTime - paused;
+}
+function formatElapsed(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  return `${String(Math.floor(total/60)).padStart(2,'0')}:${String(total%60).padStart(2,'0')}`;
+}
+
+const CIRCUMFERENCE = 2 * Math.PI * 52;
+function updateSessionUI() {
+  if (!session) return;
+  const s = session, b = currentBlock();
+  let total, phaseClass;
+  if (s.phase === 'prep') { total = 3; phaseClass = 'phase-prep'; }
+  else if (s.phase === 'hold') {
+    total = b.hold;
+    phaseClass = b.type === 'quick' ? 'phase-quick' : b.type === 'release' ? 'phase-release' : '';
+  } else if (s.phase === 'setrest') { total = Math.max(b.rest*2, 10); phaseClass = 'phase-rest'; }
+  else { total = b.rest; phaseClass = 'phase-rest'; }
+  const frac = Math.max(0, s.timeLeft / total);
+  const track = document.getElementById('ring-track');
+  track.style.strokeDashoffset = CIRCUMFERENCE * (1 - frac);
+  track.className = 'ring-track ' + phaseClass;
+  document.getElementById('ring-seconds').textContent = s.timeLeft;
+  const pe = document.getElementById('ring-phase');
+  if (s.phase === 'prep') { pe.textContent = 'get ready'; pe.className = 'ring-phase prep'; }
+  else if (s.phase === 'hold') {
+    if (b.type === 'quick') { pe.textContent = b.hold > 1 ? 'pulse' : 'flick'; pe.className = 'ring-phase quick'; }
+    else if (b.type === 'release') { pe.textContent = 'release'; pe.className = 'ring-phase release'; }
+    else { pe.textContent = 'hold'; pe.className = 'ring-phase hold'; }
+  } else {
+    pe.textContent = s.phase === 'setrest' ? 'set rest' : (b.type === 'release' ? 'breathe' : 'rest');
+    pe.className = 'ring-phase rest';
+  }
+  const pulse = document.getElementById('ring-pulse');
+  pulse.className = 'ring-pulse';
+  if (s.phase === 'hold') {
+    if (b.type === 'quick') pulse.classList.add('active-quick');
+    else if (b.type === 'release') pulse.classList.add('active-release');
+    else pulse.classList.add('active-hold');
+  } else if (s.phase !== 'prep') pulse.classList.add('active-rest');
+  document.getElementById('s-set-cur').textContent = s.currentSet;
+  document.getElementById('s-set-tot').textContent = b.sets;
+  document.getElementById('s-set-label').textContent = `Set ${s.currentSet}`;
+
+  // Position pill + banner
+  const posPill = document.getElementById('position-pill');
+  const posBanner = document.getElementById('position-banner');
+  if (s.position && POSITIONS[s.position]) {
+    const p = POSITIONS[s.position];
+    posPill.classList.remove('hidden');
+    document.getElementById('s-position-icon').textContent = p.icon;
+    document.getElementById('s-position-label').textContent = p.label;
+    if (s.phase === 'prep') {
+      posBanner.classList.remove('hidden');
+      document.getElementById('pb-icon').textContent = p.icon;
+      document.getElementById('pb-label').textContent = p.label;
+      document.getElementById('pb-instruction').textContent = p.instruction;
+    } else {
+      posBanner.classList.add('hidden');
+    }
+  } else {
+    posPill.classList.add('hidden');
+    posBanner.classList.add('hidden');
+  }
+  const bl = document.getElementById('s-block-label');
+  if (s.fromPlan) bl.textContent = `Plan · Week ${s.planWeekN} · ${s.planSessionName}`;
+  else if (s.blocks.length > 1) {
+    const names = { slow:'Slow Holds', quick:'Quick Flicks', release:'Release' };
+    bl.textContent = `Block ${s.currentBlockIdx+1}/${s.blocks.length} · ${names[b.type]}`;
+  } else bl.textContent = '';
+  const nl = document.getElementById('s-next-label');
+  if (s.phase === 'prep') nl.textContent = 'Session starting...';
+  else if (s.phase === 'hold') {
+    if (b.type === 'quick') nl.textContent = b.hold > 1 ? `Pulse ${s.currentRep} of ${b.reps}` : 'Quick flick rhythm';
+    else if (b.type === 'release') nl.textContent = 'Let everything relax fully';
+    else nl.textContent = `Rep ${s.currentRep} of ${b.reps}`;
+  } else if (s.phase === 'rest') nl.textContent = `Rest — rep ${s.currentRep+1} next`;
+  else nl.textContent = 'Rest — next set coming up';
+  document.getElementById('s-elapsed').textContent = formatElapsed(getElapsedMs());
+  document.getElementById('elapsed-pill').classList.toggle('paused', s.paused);
+  updateDots(); updateBreathGuide(s, b); updateAudioButton();
+  const pb = document.getElementById('btn-pause');
+  pb.textContent = s.paused ? 'Resume' : 'Pause';
+  pb.className = 'btn-main-action' + (s.paused ? ' paused' : '');
+}
+function updateAudioButton() {
+  const btn = document.getElementById('btn-audio');
+  btn.textContent = settings.voice ? '🗣' : settings.audio ? '🔊' : '🔇';
+}
+function updateBreathGuide(s, b) {
+  const g = document.getElementById('breath-guide');
+  const show = settings.breath && b && ((s.phase === 'hold' && b.type === 'release') || s.phase === 'rest' || s.phase === 'setrest');
+  if (!show) {
+    g.classList.remove('active','inhaling','exhaling');
+    if (breathTimer) { clearInterval(breathTimer); breathTimer = null; }
+    return;
+  }
+  if (g.classList.contains('active')) return;
+  g.classList.add('active');
+  const label = document.getElementById('breath-text');
+  let inhale = true;
+  const step = () => {
+    if (inhale) { g.classList.remove('exhaling'); g.classList.add('inhaling'); label.textContent = 'Inhale'; }
+    else { g.classList.remove('inhaling'); g.classList.add('exhaling'); label.textContent = 'Exhale'; }
+    inhale = !inhale;
+  };
+  step(); breathTimer = setInterval(step, 4000);
+}
+
+function togglePause() {
+  session.paused = !session.paused;
+  if (session.paused) { session.pauseCount++; session.pausedSince = Date.now(); persistActive(); }
+  else { if (session.pausedSince) { session.totalPausedMs = (session.totalPausedMs || 0) + (Date.now() - session.pausedSince); session.pausedSince = null; } tick(); }
+  updateSessionUI();
+}
+function skipPhase() { session.skipCount++; clearInterval(timer); session.timeLeft = 0; advancePhase(); }
+function cycleAudioMode() {
+  if (settings.voice) { settings.voice = false; settings.audio = true; }
+  else if (settings.audio) { settings.audio = false; }
+  else { settings.audio = true; }
+  updateData(d => { d.settings = settings; });
+  updateAudioButton();
+  showToast(settings.voice ? 'Voice cues' : settings.audio ? 'Sound on' : 'Silent');
+}
+function confirmStop() {
+  if (!confirm('End this session? Progress will not be saved.')) return;
+  clearInterval(timer); if (breathTimer) clearInterval(breathTimer);
+  releaseWakeLock();
+  updateData(d => { delete d.activeSession; });
+  session = null; showScreen('home');
+}
+function persistActive() {
+  if (!session) return;
+  const b = currentBlock();
+  updateData(d => {
+    d.activeSession = { ...session, totalReps:b.reps, totalSets:b.sets, paused:true, savedAt:Date.now(), elapsedAtSave: getElapsedMs() };
+  });
+}
+
+function finishSession() {
+  clearInterval(timer); if (breathTimer) clearInterval(breathTimer);
+  releaseWakeLock();
+  cueDone(); vibrate([60,40,60,40,100]);
+  const elapsedMs = getElapsedMs();
+  const struggled = session.pauseCount > 2 || session.skipCount > 2;
+
+  // Mark plan session done
+  if (session.fromPlan && session.planSessionId) markPlanSessionDone(session.planSessionId);
+
+  const entry = {
+    date: todayStr(), prog: session.fromPlan ? 'plan' : session.prog,
+    hold: session.holdTimeForLog, reps: session.completedReps, sets: session.currentSet,
+    minutes: Math.round(elapsedMs / 60000), ts: Date.now(), struggled,
+    levelAtTime: session.levelAtTime || 0,
+    planSessionName: session.planSessionName || null,
+    planWeekN: session.planWeekN || null,
+  };
+  updateData(d => { d.sessions.push(entry); delete d.activeSession; });
+
+  document.getElementById('c-reps').textContent = session.completedReps;
+  document.getElementById('c-sets').textContent = session.currentSet;
+  document.getElementById('c-hold').textContent = session.holdTimeForLog + 's';
+  document.getElementById('c-duration').textContent = formatElapsed(elapsedMs);
+  document.getElementById('struggled-note').classList.toggle('hidden', !struggled);
+
+  const box = document.getElementById('c-progress-box');
+  box.classList.add('hidden');
+
+  if (session.fromPlan) {
+    box.classList.remove('hidden');
+    const today = getTodayPlan();
+    const remaining = today ? today.sessions.filter(s => !s.done).length : 0;
+    document.getElementById('c-progress-title').textContent = remaining === 0 ? '🌟 Day complete!' : '✓ Plan session done';
+    document.getElementById('c-progress-text').textContent = remaining === 0
+      ? `All 3 sessions for Week ${session.planWeekN} day done. See you tomorrow!`
+      : `${remaining} more session${remaining > 1 ? 's' : ''} scheduled today.`;
+    document.getElementById('c-progress-actions').innerHTML = '';
+  } else if (!struggled && session.prog !== 'custom' && PROGRAMS[session.prog]) {
+    const prog = PROGRAMS[session.prog];
+    const all = getData().sessions.filter(s => s.prog === session.prog && !s.struggled && (s.levelAtTime||0) >= session.levelAtTime);
+    if (all.length >= 3) {
+      box.classList.remove('hidden');
+      if (session.levelAtTime < prog.maxLevel) {
+        document.getElementById('c-progress-title').textContent = '⬆ Level up available';
+        const p = getProgramParams(session.prog);
+        const nv = session.prog === 'quick' ? p.reps + 5 : p.hold + 1;
+        document.getElementById('c-progress-text').textContent = `Advance to level ${session.levelAtTime+1}? New: ${nv}${session.prog==='quick'?' reps':'s hold'}.`;
+        document.getElementById('c-progress-actions').innerHTML = `
+          <button class="btn btn-primary" style="padding:10px 16px;font-size:.85rem;width:auto" onclick="advanceLevel('${session.prog}')">Accept</button>
+          <button class="btn btn-ghost" style="padding:10px 16px;font-size:.8rem" onclick="dismissAdvance()">Not yet</button>`;
+      } else {
+        const next = nextProgramSuggestion(session.prog);
+        document.getElementById('c-progress-title').textContent = '⬆ Ready for next program';
+        document.getElementById('c-progress-text').textContent = next ? `Try ${next} for a fresh challenge.` : 'You\'ve maxed out!';
+        document.getElementById('c-progress-actions').innerHTML = '';
+      }
+    }
+  }
+  session = null;
+  showScreen('complete');
+}
+
+function advanceLevel(id) {
+  updateData(d => { d.progression[id] = (d.progression[id] || 0) + 1; });
+  showToast(`Advanced to level ${getData().progression[id]}!`);
+  document.getElementById('c-progress-box').classList.add('hidden');
+}
+function dismissAdvance() { document.getElementById('c-progress-box').classList.add('hidden'); }
+
+// ══════ HISTORY + CHART ══════
+function renderHistory() {
+  const sessions = getData().sessions.slice().reverse();
+  const list = document.getElementById('history-list'); list.innerHTML = '';
+  const chartWrap = document.getElementById('chart-wrap');
+  if (sessions.length >= 2) { chartWrap.classList.remove('hidden'); renderChart(sessions.slice().reverse()); }
+  else chartWrap.classList.add('hidden');
+
+  if (!sessions.length) { list.innerHTML = '<div class="history-empty">No sessions yet.<br>Complete your first workout!</div>'; return; }
+
+  const colorMap = { beginner:'var(--accent)', intermediate:'var(--rest)', advanced:'var(--quick)', quick:'var(--quick)', ptStandard:'var(--release)', custom:'var(--text-muted)', plan:'var(--accent)' };
+  sessions.forEach(s => {
+    const dt = new Date(s.ts);
+    const fmt = dt.toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' });
+    const tim = dt.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit' });
+    const name = s.prog === 'plan' ? `Plan W${s.planWeekN} · ${s.planSessionName||'Session'}` : (PROGRAMS[s.prog]?.name || s.prog);
+    const planTag = s.prog === 'plan' ? '<span class="plan-tag">Plan</span>' : '';
+    const el = document.createElement('div'); el.className = 'history-item';
+    el.innerHTML = `
+      <div class="history-dot" style="background:${colorMap[s.prog]||'var(--accent)'}"></div>
+      <div style="flex:1">
+        <div class="history-detail">${name}${planTag}${s.struggled?'<span class="struggle-tag">Struggled</span>':''}</div>
+        <div class="history-date">${s.hold}s · ${s.reps} reps · ${fmt} ${tim}${s.minutes?' · '+s.minutes+'min':''}</div>
+      </div>`;
+    list.appendChild(el);
+  });
+}
+
+function renderChart(sessions) {
+  const recent = sessions.slice(-20);
+  const svg = document.getElementById('chart-svg');
+  const W = 300, H = 140, PAD = 12;
+  const holds = recent.map(s => s.hold || 0);
+  const minH = Math.max(0, Math.min(...holds) - 2), maxH = Math.max(...holds) + 2;
+  const range = Math.max(1, maxH - minH);
+  const pt = (i, v) => [PAD + (i/Math.max(1,recent.length-1))*(W-PAD*2), H - PAD - ((v-minH)/range)*(H-PAD*2)];
+  const pathD = recent.map((s,i) => { const [x,y] = pt(i, s.hold); return `${i===0?'M':'L'}${x.toFixed(1)},${y.toFixed(1)}`; }).join(' ');
+  const areaD = pathD + ` L${pt(recent.length-1, minH)[0].toFixed(1)},${H-PAD} L${pt(0, minH)[0].toFixed(1)},${H-PAD} Z`;
+  const colors = { beginner:'var(--accent)', intermediate:'var(--rest)', advanced:'var(--quick)', quick:'var(--quick)', ptStandard:'var(--release)', custom:'var(--text-muted)', plan:'var(--accent)' };
+  const dots = recent.map((s,i) => { const [x,y] = pt(i, s.hold); return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5" fill="${colors[s.prog]||'var(--accent)'}" opacity="${s.struggled?0.4:1}"/>`; }).join('');
+  svg.innerHTML = `
+    <defs><linearGradient id="chart-area" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+    </linearGradient></defs>
+    <path d="${areaD}" fill="url(#chart-area)"/>
+    <path d="${pathD}" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linejoin="round"/>
+    ${dots}`;
+  const all = getData().sessions;
+  document.getElementById('stat-avg-hold').textContent = (all.reduce((a,s)=>a+s.hold,0)/all.length).toFixed(1) + 's';
+  document.getElementById('stat-avg-reps').textContent = (all.reduce((a,s)=>a+s.reps,0)/all.length).toFixed(0);
+  document.getElementById('stat-best-hold').textContent = Math.max(...all.map(s=>s.hold)) + 's';
+  document.getElementById('chart-range').textContent = `last ${recent.length}`;
+}
+
+function clearHistory() {
+  if (!confirm('Clear all session history?')) return;
+  updateData(d => { d.sessions = []; });
+  renderHistory(); showToast('History cleared');
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(getData(), null, 2)], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `pft-backup-${todayStr()}.json`;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  showToast('Data exported');
+}
+function importData(file) {
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = e => {
+    try {
+      const p = JSON.parse(e.target.result);
+      if (!p || typeof p !== 'object') throw 1;
+      if (!confirm(`Import ${p.sessions?.length||0} sessions? This replaces current data.`)) return;
+      saveData(p); settings = loadData().settings; applyTheme(); renderHistory(); showToast('Data imported');
+    } catch { showToast('Invalid file'); }
+  };
+  r.readAsText(file);
+  document.getElementById('file-import').value = '';
+}
+
+// ══════ SETTINGS ══════
+function renderSettings() {
+  document.getElementById('set-audio').checked = settings.audio;
+  document.getElementById('set-voice').checked = settings.voice;
+  document.getElementById('set-haptic').checked = settings.haptic;
+  document.getElementById('set-breath').checked = settings.breath;
+  document.getElementById('set-wake').checked = settings.wake;
+  document.getElementById('set-theme').value = settings.theme;
+  document.getElementById('set-default-prog').value = settings.defaultProgram;
+}
+function updateSetting(k, v) {
+  settings[k] = v;
+  updateData(d => { d.settings = settings; });
+  if (k === 'theme') applyTheme();
+  if (k === 'defaultProgram') selectedProg = v;
+}
+function resetProgression() {
+  if (!confirm('Reset all program levels to 0?')) return;
+  updateData(d => { d.progression = {}; });
+  showToast('Progression reset');
+}
+function applyTheme() {
+  const t = settings.theme;
+  const dark = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+  document.body.classList.toggle('theme-dark', dark);
+}
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (settings.theme === 'auto') applyTheme(); });
+
+function todayStr() { return new Date().toISOString().slice(0, 10); }
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+applyTheme();
+refreshHome();
+</script>
+</body>
+</html>
