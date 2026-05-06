@@ -486,6 +486,17 @@ h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.2rem}
         <option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option>
       </select></div>
   </div>
+
+  <div class="label mt-sm">Language</div>
+  <div class="settings-group">
+    <div class="settings-row"><div><div class="settings-row-label">Select language</div><div class="settings-row-desc">English, Português, Español</div></div>
+      <select class="settings-select" id="set-language" onchange="changeLanguage(this.value)">
+        <option value="en">🇬🇧 English</option>
+        <option value="pt-BR">🇧🇷 Português</option>
+        <option value="es-ES">🇪🇸 Español</option>
+      </select></div>
+  </div>
+
   <div class="label mt-sm">Defaults</div>
   <div class="settings-group">
     <div class="settings-row"><div><div class="settings-row-label">Default program</div><div class="settings-row-desc">For ad-hoc workouts (off-plan)</div></div>
@@ -507,10 +518,277 @@ h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.2rem}
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════ STORAGE ══════
+// ══════ TRANSLATIONS ══════
+const TRANSLATIONS = {
+  en: {
+    tagline: 'Guided training with progressive overload',
+    resumeSession: '⏸ Resume session',
+    continue: 'Continue',
+    discard: 'Discard',
+    dayStreak: 'day streak',
+    total: 'Total',
+    thisWeek: 'This week',
+    sessions: 'Sessions',
+    reps: 'Reps',
+    avgHold: 'Avg hold',
+    recoverySuggested: '🌿 Recovery suggested',
+    recoveryText: "You've trained intensely this week. Consider a lighter Beginner session today.",
+    chooseProgram: 'Choose program',
+    customize: 'Customize',
+    holdSec: 'Hold (sec)',
+    restSec: 'Rest (sec)',
+    sets: 'Sets',
+    beginSession: 'Begin Session',
+    history: 'History',
+    settings: 'Settings',
+    set: 'Set',
+    pause: 'Pause',
+    nextBlock: 'Next Block',
+    sessionComplete: 'Session Complete',
+    totalReps: 'Total Reps',
+    setsDone: 'Sets Done',
+    hold: 'Hold (sec)',
+    duration: 'Duration',
+    struggledNote: "Many pauses or skips — won't count toward progression",
+    backToHome: 'Back to Home',
+    holdTimeTrend: 'Hold time trend',
+    avgReps: 'Avg reps',
+    bestHold: 'Best hold',
+    export: '⬇ Export',
+    import: '⬆ Import',
+    clear: '🗑 Clear',
+    cues: 'Cues',
+    audioBeeps: 'Audio beeps',
+    audioBeepsDesc: 'Tones at phase transitions',
+    voiceCues: 'Voice cues',
+    voiceCuesDesc: 'Spoken "Hold", "Rest", "Release"',
+    hapticFeedback: 'Haptic feedback',
+    hapticFeedbackDesc: 'Vibration on phase changes',
+    breathingGuide: 'Breathing guide',
+    breathingGuideDesc: 'Visual inhale/exhale pacer during rest',
+    screen: 'Screen',
+    keepScreenOn: 'Keep screen on',
+    keepScreenOnDesc: 'Prevents dimming during workouts',
+    theme: 'Theme',
+    themeDesc: 'Light, dark, or follow system',
+    auto: 'Auto',
+    light: 'Light',
+    dark: 'Dark',
+    language: 'Language',
+    selectLanguage: 'Select language',
+    selectLanguageDesc: 'English, Português, Español',
+    defaults: 'Defaults',
+    defaultProgram: 'Default program',
+    defaultProgramDesc: 'Pre-selected when you open the app',
+    progBeginner: 'Beginner',
+    progIntermediate: 'Intermediate',
+    progAdvanced: 'Advanced',
+    progQuick: 'Quick Flicks',
+    progPTStandard: 'PT Standard',
+    progCustom: 'Custom',
+    data: 'Data',
+    resetProgression: 'Reset progression',
+    resetProgressionDesc: 'Start all program levels from scratch',
+    reset: 'Reset',
+    wakeWarn: '💡 If the screen still dims during workouts, increase your phone\'s screen timeout in system settings.',
+  },
+  'pt-BR': {
+    tagline: 'Treinamento guiado com sobrecarga progressiva',
+    resumeSession: '⏸ Retomar sessão',
+    continue: 'Continuar',
+    discard: 'Descartar',
+    dayStreak: 'dia em sequência',
+    total: 'Total',
+    thisWeek: 'Esta semana',
+    sessions: 'Sessões',
+    reps: 'Repetições',
+    avgHold: 'Média de contração',
+    recoverySuggested: '🌿 Recuperação sugerida',
+    recoveryText: 'Você treinou intensamente esta semana. Considere uma sessão mais leve hoje.',
+    chooseProgram: 'Escolha o programa',
+    customize: 'Personalizar',
+    holdSec: 'Contração (seg)',
+    restSec: 'Repouso (seg)',
+    sets: 'Séries',
+    beginSession: 'Iniciar Sessão',
+    history: 'Histórico',
+    settings: 'Configurações',
+    set: 'Série',
+    pause: 'Pausar',
+    nextBlock: 'Próximo Bloco',
+    sessionComplete: 'Sessão Concluída',
+    totalReps: 'Total de Repetições',
+    setsDone: 'Séries Completas',
+    hold: 'Contração (seg)',
+    duration: 'Duração',
+    struggledNote: 'Muitas pausas ou pulos — não contará para progressão',
+    backToHome: 'Voltar para Home',
+    holdTimeTrend: 'Tendência de tempo de contração',
+    avgReps: 'Média de reps',
+    bestHold: 'Melhor contração',
+    export: '⬇ Exportar',
+    import: '⬆ Importar',
+    clear: '🗑 Limpar',
+    cues: 'Sinais',
+    audioBeeps: 'Sons de áudio',
+    audioBeepsDesc: 'Tons nas transições de fase',
+    voiceCues: 'Dicas de voz',
+    voiceCuesDesc: 'Áudio "Contração", "Repouso", "Relaxamento"',
+    hapticFeedback: 'Feedback háptico',
+    hapticFeedbackDesc: 'Vibração nas mudanças de fase',
+    breathingGuide: 'Guia de respiração',
+    breathingGuideDesc: 'Pacer visual de inspiração/expiração durante repouso',
+    screen: 'Tela',
+    keepScreenOn: 'Manter tela acesa',
+    keepScreenOnDesc: 'Previne escurecimento durante treinos',
+    theme: 'Tema',
+    themeDesc: 'Claro, escuro ou seguir sistema',
+    auto: 'Automático',
+    light: 'Claro',
+    dark: 'Escuro',
+    language: 'Idioma',
+    selectLanguage: 'Selecione o idioma',
+    selectLanguageDesc: 'English, Português, Español',
+    defaults: 'Padrões',
+    defaultProgram: 'Programa padrão',
+    defaultProgramDesc: 'Pré-selecionado ao abrir o app',
+    progBeginner: 'Iniciante',
+    progIntermediate: 'Intermediário',
+    progAdvanced: 'Avançado',
+    progQuick: 'Contrações Rápidas',
+    progPTStandard: 'Protocolo PT',
+    progCustom: 'Personalizado',
+    data: 'Dados',
+    resetProgression: 'Resetar progressão',
+    resetProgressionDesc: 'Começar todos os níveis do programa do zero',
+    reset: 'Resetar',
+    wakeWarn: '💡 Se a tela ainda escurecer durante treinos, aumente o tempo de espera da tela nas configurações do sistema.',
+  },
+  'es-ES': {
+    tagline: 'Entrenamiento guiado con sobrecarga progresiva',
+    resumeSession: '⏸ Reanudar sesión',
+    continue: 'Continuar',
+    discard: 'Descartar',
+    dayStreak: 'día en racha',
+    total: 'Total',
+    thisWeek: 'Esta semana',
+    sessions: 'Sesiones',
+    reps: 'Repeticiones',
+    avgHold: 'Media de contracción',
+    recoverySuggested: '🌿 Recuperación sugerida',
+    recoveryText: 'Has entrenado intensamente esta semana. Considera una sesión más ligera hoy.',
+    chooseProgram: 'Elige el programa',
+    customize: 'Personalizar',
+    holdSec: 'Contracción (seg)',
+    restSec: 'Descanso (seg)',
+    sets: 'Series',
+    beginSession: 'Iniciar Sesión',
+    history: 'Historial',
+    settings: 'Configuración',
+    set: 'Serie',
+    pause: 'Pausa',
+    nextBlock: 'Siguiente Bloque',
+    sessionComplete: 'Sesión Completada',
+    totalReps: 'Total de Repeticiones',
+    setsDone: 'Series Completadas',
+    hold: 'Contracción (seg)',
+    duration: 'Duración',
+    struggledNote: 'Muchas pausas o saltos — no contará para la progresión',
+    backToHome: 'Volver a Home',
+    holdTimeTrend: 'Tendencia de tiempo de contracción',
+    avgReps: 'Media de reps',
+    bestHold: 'Mejor contracción',
+    export: '⬇ Exportar',
+    import: '⬆ Importar',
+    clear: '🗑 Limpiar',
+    cues: 'Señales',
+    audioBeeps: 'Sonidos de audio',
+    audioBeepsDesc: 'Tonos en transiciones de fase',
+    voiceCues: 'Indicaciones de voz',
+    voiceCuesDesc: 'Audio "Contracción", "Descanso", "Relajación"',
+    hapticFeedback: 'Retroalimentación háptica',
+    hapticFeedbackDesc: 'Vibración en cambios de fase',
+    breathingGuide: 'Guía de respiración',
+    breathingGuideDesc: 'Indicador visual de inspiración/expiración durante descanso',
+    screen: 'Pantalla',
+    keepScreenOn: 'Mantener pantalla encendida',
+    keepScreenOnDesc: 'Evita atenuación durante entrenamientos',
+    theme: 'Tema',
+    themeDesc: 'Claro, oscuro o seguir sistema',
+    auto: 'Automático',
+    light: 'Claro',
+    dark: 'Oscuro',
+    language: 'Idioma',
+    selectLanguage: 'Selecciona idioma',
+    selectLanguageDesc: 'English, Português, Español',
+    defaults: 'Valores predeterminados',
+    defaultProgram: 'Programa predeterminado',
+    defaultProgramDesc: 'Preseleccionado al abrir la app',
+    progBeginner: 'Principiante',
+    progIntermediate: 'Intermedio',
+    progAdvanced: 'Avanzado',
+    progQuick: 'Contracciones Rápidas',
+    progPTStandard: 'Protocolo PT',
+    progCustom: 'Personalizado',
+    data: 'Datos',
+    resetProgression: 'Restablecer progresión',
+    resetProgressionDesc: 'Comenzar todos los niveles del programa desde cero',
+    reset: 'Restablecer',
+    wakeWarn: '💡 Si la pantalla se sigue atenuando durante entrenamientos, aumenta el tiempo de espera de la pantalla en configuración del sistema.',
+  }
+};
+
+let currentLanguage = 'en';
+
+function t(key) {
+  return TRANSLATIONS[currentLanguage][key] || TRANSLATIONS['en'][key] || key;
+}
+
+function applyLanguage(lang) {
+  currentLanguage = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (key && TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
+      el.textContent = TRANSLATIONS[lang][key];
+    }
+  });
+}
+
+function changeLanguage(lang) {
+  applyLanguage(lang);
+  updateData(d => { d.settings.language = lang; });
+  showToast(t('language') + ': ' + lang.toUpperCase());
+}
+
+// ══════ STORAGE (IndexedDB + localStorage fallback) ══════
 const KEY = 'pft_data';
-const DEFAULT_SETTINGS = { audio:true, voice:false, haptic:true, breath:true, wake:true, theme:'auto', defaultProgram:'beginner' };
-function loadData() {
+const DB_NAME = 'pft_db';
+const STORE_NAME = 'data';
+const DEFAULT_SETTINGS = { audio:true, voice:false, haptic:true, breath:true, wake:true, theme:'auto', defaultProgram:'beginner', language:'en' };
+let db = null;
+let useIndexedDB = false;
+
+async function initDB() {
+  try {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, 1);
+      req.onerror = () => { useIndexedDB = false; resolve(null); };
+      req.onsuccess = (e) => { db = e.target.result; useIndexedDB = true; resolve(db); };
+      req.onupgradeneeded = (e) => {
+        const d = e.target.result;
+        if (!d.objectStoreNames.contains(STORE_NAME)) {
+          d.createObjectStore(STORE_NAME);
+        }
+      };
+    });
+  } catch (err) {
+    console.warn('IndexedDB unavailable, using localStorage fallback:', err);
+    useIndexedDB = false;
+    return null;
+  }
+}
+
+function loadDataSync() {
   try {
     const d = JSON.parse(localStorage.getItem(KEY)) || {};
     d.sessions = d.sessions || []; d.progression = d.progression || {};
@@ -518,7 +796,27 @@ function loadData() {
     return d;
   } catch { return { sessions:[], progression:{}, settings:{...DEFAULT_SETTINGS} }; }
 }
-function saveData(d) { localStorage.setItem(KEY, JSON.stringify(d)); }
+
+function loadData() {
+  return loadDataSync();
+}
+
+function saveData(d) {
+  // Try IndexedDB first
+  if (useIndexedDB && db) {
+    try {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      const store = tx.objectStore(STORE_NAME);
+      store.put(d, KEY);
+    } catch (err) {
+      console.warn('IndexedDB write failed, using localStorage:', err);
+      localStorage.setItem(KEY, JSON.stringify(d));
+    }
+  } else {
+    localStorage.setItem(KEY, JSON.stringify(d));
+  }
+}
+
 function getData() { return loadData(); }
 function updateData(fn) { const d = loadData(); fn(d); saveData(d); }
 let settings = loadData().settings;
@@ -1497,6 +1795,7 @@ function renderSettings() {
   document.getElementById('set-breath').checked = settings.breath;
   document.getElementById('set-wake').checked = settings.wake;
   document.getElementById('set-theme').value = settings.theme;
+  document.getElementById('set-language').value = settings.language || 'en';
   document.getElementById('set-default-prog').value = settings.defaultProgram;
 }
 function updateSetting(k, v) {
@@ -1526,6 +1825,10 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
+// Initialize IndexedDB and start the app
+initDB().catch(err => console.warn('DB init failed, using localStorage:', err));
+currentLanguage = settings.language || 'en';
+applyLanguage(currentLanguage);
 applyTheme();
 refreshHome();
 </script>
