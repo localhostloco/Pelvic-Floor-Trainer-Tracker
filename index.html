@@ -688,6 +688,11 @@ const TRANSLATIONS = {
 
     // Description words (lowercase, used in "3s hold · 6s rest · 10 reps · 3 sets")
     'desc_hold': 'hold', 'desc_rest': 'rest', 'desc_reps': 'reps', 'desc_sets': 'sets', 'desc_flick': 'flick',
+
+    // Breath guide + ring extras
+    'Inhale': 'Inhale', 'Exhale': 'Exhale', 'pulse': 'pulse', 'Pulse': 'Pulse', 'Resume': 'Resume',
+    'End this session? Progress will not be saved.': 'End this session? Progress will not be saved.',
+    'Skip': 'Skip',
   },
   'pt-BR': {
     tagline: 'Treinamento guiado com sobrecarga progressiva',
@@ -843,6 +848,11 @@ const TRANSLATIONS = {
 
     // Description words
     'desc_hold': 'contração', 'desc_rest': 'repouso', 'desc_reps': 'reps', 'desc_sets': 'séries', 'desc_flick': 'flick',
+
+    // Breath guide + ring extras
+    'Inhale': 'Inspire', 'Exhale': 'Expire', 'pulse': 'pulso', 'Pulse': 'Pulso', 'Resume': 'Continuar',
+    'End this session? Progress will not be saved.': 'Encerrar esta sessão? O progresso não será salvo.',
+    'Skip': 'Pular',
   },
   'es-ES': {
     tagline: 'Entrenamiento guiado con sobrecarga progresiva',
@@ -998,6 +1008,11 @@ const TRANSLATIONS = {
 
     // Description words
     'desc_hold': 'contracción', 'desc_rest': 'descanso', 'desc_reps': 'reps', 'desc_sets': 'series', 'desc_flick': 'flick',
+
+    // Breath guide + ring extras
+    'Inhale': 'Inspira', 'Exhale': 'Espira', 'pulse': 'pulso', 'Pulse': 'Pulso', 'Resume': 'Continuar',
+    'End this session? Progress will not be saved.': '¿Finalizar esta sesión? El progreso no se guardará.',
+    'Skip': 'Saltar',
   }
 };
 
@@ -1135,6 +1150,18 @@ function applyLanguage(lang) {
       node.nodeValue = leading + translated + trailing;
     } else if (node._origText && lang === 'en') {
       node.nodeValue = node._origText;
+    }
+  });
+
+  // Also translate title attributes (for tooltips like the Skip button)
+  document.querySelectorAll('[title]').forEach(el => {
+    const original = el._origTitle || el.getAttribute('title');
+    if (!original) return;
+    if (TRANSLATIONS[lang] && TRANSLATIONS[lang][original]) {
+      if (!el._origTitle) el._origTitle = original;
+      el.setAttribute('title', TRANSLATIONS[lang][original]);
+    } else if (el._origTitle && lang === 'en') {
+      el.setAttribute('title', el._origTitle);
     }
   });
 }
@@ -1925,13 +1952,13 @@ function updateSessionUI() {
   track.className = 'ring-track ' + phaseClass;
   document.getElementById('ring-seconds').textContent = s.timeLeft;
   const pe = document.getElementById('ring-phase');
-  if (s.phase === 'prep') { pe.textContent = 'get ready'; pe.className = 'ring-phase prep'; }
+  if (s.phase === 'prep') { pe.textContent = t('get ready'); pe.className = 'ring-phase prep'; }
   else if (s.phase === 'hold') {
-    if (b.type === 'quick') { pe.textContent = b.hold > 1 ? 'pulse' : 'flick'; pe.className = 'ring-phase quick'; }
-    else if (b.type === 'release') { pe.textContent = 'release'; pe.className = 'ring-phase release'; }
-    else { pe.textContent = 'hold'; pe.className = 'ring-phase hold'; }
+    if (b.type === 'quick') { pe.textContent = b.hold > 1 ? t('pulse') : t('flick'); pe.className = 'ring-phase quick'; }
+    else if (b.type === 'release') { pe.textContent = t('release'); pe.className = 'ring-phase release'; }
+    else { pe.textContent = t('hold'); pe.className = 'ring-phase hold'; }
   } else {
-    pe.textContent = s.phase === 'setrest' ? 'set rest' : (b.type === 'release' ? 'breathe' : 'rest');
+    pe.textContent = s.phase === 'setrest' ? t('set rest') : (b.type === 'release' ? t('breathe') : t('rest'));
     pe.className = 'ring-phase rest';
   }
   const pulse = document.getElementById('ring-pulse');
@@ -1943,7 +1970,7 @@ function updateSessionUI() {
   } else if (s.phase !== 'prep') pulse.classList.add('active-rest');
   document.getElementById('s-set-cur').textContent = s.currentSet;
   document.getElementById('s-set-tot').textContent = b.sets;
-  document.getElementById('s-set-label').textContent = `Set ${s.currentSet}`;
+  document.getElementById('s-set-label').textContent = `${t('Set')} ${s.currentSet}`;
 
   // Position pill + banner
   const posPill = document.getElementById('position-pill');
@@ -1952,12 +1979,12 @@ function updateSessionUI() {
     const p = POSITIONS[s.position];
     posPill.classList.remove('hidden');
     document.getElementById('s-position-icon').textContent = p.icon;
-    document.getElementById('s-position-label').textContent = p.label;
+    document.getElementById('s-position-label').textContent = t(p.label);
     if (s.phase === 'prep') {
       posBanner.classList.remove('hidden');
       document.getElementById('pb-icon').textContent = p.icon;
-      document.getElementById('pb-label').textContent = p.label;
-      document.getElementById('pb-instruction').textContent = p.instruction;
+      document.getElementById('pb-label').textContent = t(p.label);
+      document.getElementById('pb-instruction').textContent = t(p.instruction);
     } else {
       posBanner.classList.add('hidden');
     }
@@ -1969,21 +1996,21 @@ function updateSessionUI() {
   if (s.fromPlan) bl.textContent = `${t('Plan')} · ${t('Week')} ${s.planWeekN} · ${t(s.planSessionName)}`;
   else if (s.blocks.length > 1) {
     const names = { slow:t('Slow Holds'), quick:t('Quick Flicks'), release:t('Release') };
-    bl.textContent = `Block ${s.currentBlockIdx+1}/${s.blocks.length} · ${names[b.type]}`;
+    bl.textContent = `${t('Block')} ${s.currentBlockIdx+1}/${s.blocks.length} · ${names[b.type]}`;
   } else bl.textContent = '';
   const nl = document.getElementById('s-next-label');
-  if (s.phase === 'prep') nl.textContent = 'Session starting...';
+  if (s.phase === 'prep') nl.textContent = t('Session starting...');
   else if (s.phase === 'hold') {
-    if (b.type === 'quick') nl.textContent = b.hold > 1 ? `Pulse ${s.currentRep} of ${b.reps}` : 'Quick flick rhythm';
-    else if (b.type === 'release') nl.textContent = 'Let everything relax fully';
-    else nl.textContent = `Rep ${s.currentRep} of ${b.reps}`;
-  } else if (s.phase === 'rest') nl.textContent = `Rest — rep ${s.currentRep+1} next`;
-  else nl.textContent = 'Rest — next set coming up';
+    if (b.type === 'quick') nl.textContent = b.hold > 1 ? `${t('Pulse')} ${s.currentRep} ${t('of')} ${b.reps}` : t('Quick flick rhythm');
+    else if (b.type === 'release') nl.textContent = t('Let everything relax fully');
+    else nl.textContent = `${t('Rep')} ${s.currentRep} ${t('of')} ${b.reps}`;
+  } else if (s.phase === 'rest') nl.textContent = `${t('Rest — rep')} ${s.currentRep+1} ${t('next')}`;
+  else nl.textContent = t('Rest — next set coming up');
   document.getElementById('s-elapsed').textContent = formatElapsed(getElapsedMs());
   document.getElementById('elapsed-pill').classList.toggle('paused', s.paused);
   updateDots(); updateBreathGuide(s, b); updateAudioButton();
   const pb = document.getElementById('btn-pause');
-  pb.textContent = s.paused ? 'Resume' : 'Pause';
+  pb.textContent = s.paused ? t('Resume') : t('Pause');
   pb.className = 'btn-main-action' + (s.paused ? ' paused' : '');
 }
 function updateAudioButton() {
@@ -2003,8 +2030,8 @@ function updateBreathGuide(s, b) {
   const label = document.getElementById('breath-text');
   let inhale = true;
   const step = () => {
-    if (inhale) { g.classList.remove('exhaling'); g.classList.add('inhaling'); label.textContent = 'Inhale'; }
-    else { g.classList.remove('inhaling'); g.classList.add('exhaling'); label.textContent = 'Exhale'; }
+    if (inhale) { g.classList.remove('exhaling'); g.classList.add('inhaling'); label.textContent = t('Inhale'); }
+    else { g.classList.remove('inhaling'); g.classList.add('exhaling'); label.textContent = t('Exhale'); }
     inhale = !inhale;
   };
   step(); breathTimer = setInterval(step, 4000);
@@ -2026,7 +2053,7 @@ function cycleAudioMode() {
   showToast(settings.voice ? 'Voice cues' : settings.audio ? 'Sound on' : 'Silent');
 }
 function confirmStop() {
-  if (!confirm('End this session? Progress will not be saved.')) return;
+  if (!confirm(t('End this session? Progress will not be saved.'))) return;
   clearInterval(timer); if (breathTimer) clearInterval(breathTimer);
   releaseWakeLock();
   updateData(d => { delete d.activeSession; });
